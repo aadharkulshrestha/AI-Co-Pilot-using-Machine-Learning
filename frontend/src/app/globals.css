@@ -1,0 +1,117 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-orbitron: "Orbitron", monospace;
+  --font-inter: "Inter", sans-serif;
+  --background: #030611;
+  --foreground: #e2e8f0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+}
+
+/* Cockpit Glassmorphism & HUD Utilities */
+.glass-panel {
+  background: rgba(7, 12, 30, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 12px 0 rgba(0, 240, 255, 0.04);
+}
+
+.glass-card {
+  background: rgba(10, 18, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.14);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 240, 255, 0.35);
+  background: rgba(14, 25, 58, 0.78);
+}
+
+.glass-alert-red {
+  background: rgba(45, 10, 20, 0.82);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 0, 60, 0.45);
+  box-shadow: 0 0 25px -4px rgba(255, 0, 60, 0.35), inset 0 0 15px 0 rgba(255, 0, 60, 0.1);
+}
+
+.glass-alert-amber {
+  background: rgba(45, 32, 10, 0.82);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  box-shadow: 0 0 25px -4px rgba(251, 191, 36, 0.35), inset 0 0 15px 0 rgba(251, 191, 36, 0.1);
+}
+
+.glass-alert-green {
+  background: rgba(10, 40, 25, 0.82);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 255, 136, 0.45);
+  box-shadow: 0 0 25px -4px rgba(0, 255, 136, 0.35), inset 0 0 15px 0 rgba(0, 255, 136, 0.1);
+}
+
+/* CRT / HUD Scanline overlay */
+.hud-scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Neon Text Glows */
+.glow-text-cyan {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.7), 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.glow-text-green {
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.7), 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+.glow-text-amber {
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.7), 0 0 20px rgba(251, 191, 36, 0.4);
+}
+
+.glow-text-red {
+  text-shadow: 0 0 8px rgba(255, 0, 60, 0.8), 0 0 20px rgba(255, 0, 60, 0.5);
+}
+
+/* Custom Scrollbar for Cockpit Panes */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050814;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.25);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.5);
+}
+
+/* Leaflet map custom dark styling */
+.leaflet-container {
+  background: #070c1e !important;
+}
