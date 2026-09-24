@@ -1,265 +1,475 @@
-# AI Co-Pilot: Predictive Pilot Decision-Making & Flight Risk Assessment
+# AI Co-Pilot for Aviation Risk Assessment & FCOM Flight Manual RAG
 
-[![Aviation Safety](https://img.shields.io/badge/Aviation-Safety%20Platform-00f0ff.svg)](#)
-[![Model Accuracy](https://img.shields.io/badge/Model%20Accuracy-99.58%25-00ff88.svg)](#)
-[![ROC-AUC](https://img.shields.io/badge/ROC--AUC-0.9860-00ff88.svg)](#)
-[![Inference Latency](https://img.shields.io/badge/Latency-2.4ms-00f0ff.svg)](#)
-[![Stack](https://img.shields.io/badge/Stack-FastAPI%20%2B%20Next.js%2015%20%2B%20PyTorch-38bdf8.svg)](#)
-[![UI/UX](https://img.shields.io/badge/Cockpit%20HUD-Airbus%20A350%20%2F%20B787-fbbf24.svg)](#)
-
-> **Next-generation AI-powered digital co-pilot** inspired by the **Airbus A350 XWB**, **Boeing 787 Dreamliner**, and **NASA Mission Control**. Continuously analyzes aircraft telemetry streams and historical NASA ASRS incident narratives, predicts the pilot's most probable action, estimates real-time flight risk (0–100), detects abnormal flight envelope emergencies, provides explainable AI reasoning (SHAP + Attention), and delivers actionable Quick Reference Handbook (QRH) checklists with voice audio annunciations.
+An intelligent aeronautical decision-support system integrating:
+1. **Empirical Aviation Risk Assessment**: Machine learning pipelines on **NASA ASRS** incident reports (6,978 cleaned records) and **OpenSky Squawk 7700** in-flight emergencies (832 cleaned records).
+2. **Conversational Voice AI & FCOM RAG Copilot**: Two-way voice cockpit assistant with real-time Speech-to-Text (STT), Text-to-Speech (TTS), ChromaDB vector retrieval on local Flight Crew Operating Manuals (FCOM) and Quick Reference Handbooks (QRH), and exact page-level source citations.
 
 ---
 
-## 📸 Key Capabilities & SIH Innovation Highlights
-
-- ✈️ **Futuristic Cockpit Primary Flight Display (PFD) HUD**: High-fidelity animated artificial horizon with dynamic pitch/roll ladder, airspeed tape with stall barberpoles, altitude tape, vertical speed indicator (VSI), heading compass, and flight director crosshairs.
-- 🧠 **Sequential Deep Learning (BiLSTM + Attention)**: Real-time sequential neural network analyzing 15-step sliding window telemetry for 9 pilot action categories with **99.58% accuracy** and **0.9860 ROC-AUC**.
-- ⚠️ **8 Critical Aerospace Anomaly Detectors**: Stall Warning, Low-Altitude Wind Shear / Microburst, Excessive Descent Rate, Overspeed, Terrain Proximity (CFIT), Engine Anomaly / Flameout, High Bank Angle, and Cabin Depressurization.
-- 🧪 **Interactive What-If Flight Simulator**: Real-time 10-DOF parameter sliders (Altitude, Airspeed, Vertical Rate, Pitch, Roll, Throttle, Wind, Distance) with sub-3ms live ML inference updates.
-- 📼 **NASA ASRS Black Box DFDR Replay**: Confidential NASA safety incident database with synchronized time-series flight data recorder replay.
-- 📊 **Explainable AI (XAI) Engine**: SHAP factor importance waterfall charts, 15-step temporal attention maps, and physics-based natural language explanations.
-- 🔊 **Voice Co-Pilot & Web Audio Synthesizer**: Airbus/Boeing Master Warning triple-beep chimes, Master Caution two-tone dings, and automated speech synthesis.
-- 🛰️ **Digital Twin Aircraft Health & Pilot Stress Index**: Real-time Engine N1/EGT/Oil PSI tracking, triple hydraulic loops (Green/Blue/Yellow), and biometric cognitive workload estimation.
-
----
-
-## 🏛️ System Architecture
+## 🛫 System Architecture
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                           AI CO-PILOT PLATFORM ARCHITECTURE                     │
-└────────────────────────────────────────────────────────────────────────────────┘
-                                        │
-           ┌────────────────────────────┴────────────────────────────┐
-           ▼                                                         ▼
-┌────────────────────────────────────┐    ┌────────────────────────────────────┐
-│      NASA ASRS Incident Repo       │    │     OpenSky Telemetry Streams      │
-│  (Pilot Narratives & Flight Phase) │    │   (Alt, Spd, VSI, Pitch, Roll)     │
-└──────────────────┬─────────────────┘    └──────────────────┬─────────────────┘
-                   │                                         │
-                   └────────────────────┬────────────────────┘
-                                        ▼
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                       DATA PREPROCESSING & FEATURE PIPELINE                    │
-│   • Rolling ΔAlt, d(VSI)/dt, G-load, Energy State Index (E = mgh + 0.5mv²)     │
-│   • 15-Step Sliding Window Sequences & Robust Aerospace Normalization          │
-└───────────────────────────────────────┬────────────────────────────────────────┘
-                                        ▼
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                             MACHINE LEARNING ENGINES                           │
-│  ┌─────────────────────────┐  ┌─────────────────────────┐  ┌─────────────────┐ │
-│  │ BiLSTM + Attention Head │  │ Flight Risk Scorer GBDT │  │ Envelope Alarms │ │
-│  │ Predicts 9 Pilot Action │  │ Continuous 0-100 Score  │  │ 8 Critical Cond │ │
-│  └────────────┬────────────┘  └────────────┬────────────┘  └────────┬────────┘ │
-│               └─────────────────────┬──────┴────────────────────────┘          │
-│                                     ▼                                          │
-│                       Explainable AI (SHAP & Attention)                        │
-└───────────────────────────────────────┬────────────────────────────────────────┘
-                                        ▼
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                         FASTAPI ASYNC BACKEND (PORT 8000)                      │
-│   • REST APIs (/predict, /risk-score, /recommendation, /explain, /analytics)   │
-│   • WebSocket Live Telemetry Stream (/ws/telemetry @ 2Hz - 10Hz)               │
-│   • Emergency QRH Assistant & SQLite / PostgreSQL Flight Database              │
-└───────────────────────────────────────┬────────────────────────────────────────┘
-                                        ▼
-┌────────────────────────────────────────────────────────────────────────────────┐
-│                   NEXT.JS 15 GLASSMORPHISM COCKPIT HUD (PORT 3000)             │
-│   • Primary Flight Display (PFD) HUD & Animated SVG Artificial Horizon         │
-│   • Real-Time Recharts Telemetry Streams & Leaflet GPS Flight Path Map         │
-│   • Interactive What-If Simulator & NASA ASRS Incident Black Box Replayer      │
-│   • Web Audio Warning Chime Synthesizer & Web Speech API Voice Co-Pilot        │
-└────────────────────────────────────────────────────────────────────────────────┘
+                  ┌────────────────────────────────────────┐
+                  │ Pilot Voice / Cockpit PTT Transmit     │
+                  └───────────────────┬────────────────────┘
+                                      │
+                                      ▼
+                  ┌────────────────────────────────────────┐
+                  │ Web Speech API / Whisper STT Engine    │
+                  └───────────────────┬────────────────────┘
+                                      │
+                                      ▼
+                  ┌────────────────────────────────────────┐
+                  │ Aviation Intent & Context Classifier   │
+                  │ (MANUAL_QUERY | RISK_ANALYSIS | GEN)   │
+                  └───────┬────────────────────────┬───────┘
+                          │                        │
+       [FCOM/QRH Manuals] │                        │ [Risk Inquiry]
+                          ▼                        ▼
+               ┌───────────────────────┐ ┌──────────────────────┐
+               │ RAG Engine            │ │ Existing ML Pipeline │
+               │ (ChromaDB Vector Store│ │ (ASRS Incident &     │
+               │  all-MiniLM-L6-v2)    │ │  OpenSky 7700 Data)  │
+               └──────────┬────────────┘ └──────────┬───────────┘
+                          │                         │
+                          └───────────┬─────────────┘
+                                      │
+                                      ▼
+                  ┌────────────────────────────────────────┐
+                  │ AI Response Engine & Citation Mapper   │
+                  │ (LLM or High-Fidelity Extractive RAG)  │
+                  └───────────────────┬────────────────────┘
+                                      │
+                                      ▼
+                  ┌────────────────────────────────────────┐
+                  │ SpeechSynthesis / Radio TTS Audio Out  │
+                  └───────────────────┬────────────────────┘
+                                      │
+                                      ▼
+                  ┌────────────────────────────────────────┐
+                  │ Glass Cockpit HUD EICAS Interface      │
+                  └────────────────────────────────────────┘
 ```
 
 ---
 
-## 📈 ML Model Performance Benchmarks
-
-| Metric | BiLSTM Action Predictor | Flight Risk Scorer | Industry Benchmark |
-| :--- | :--- | :--- | :--- |
-| **Top-1 Accuracy** | **99.58%** | — | > 90.0% |
-| **ROC-AUC (OVR Macro)** | **0.9860** | — | > 0.950 |
-| **Macro F1-Score** | **0.9400** | — | > 0.880 |
-| **Macro Precision** | **0.9420** | — | > 0.880 |
-| **Macro Recall** | **0.9380** | — | > 0.880 |
-| **Risk Score R²** | — | **0.9680** | > 0.900 |
-| **Risk RMSE** | — | **3.25 pts** | < 5.00 pts |
-| **Inference Latency** | **2.4 ms** | **1.2 ms** | < 10.0 ms |
-| **Throughput** | **415 vectors/sec** | **780 vectors/sec** | > 100/sec |
-
----
-
-## 🚨 Emergency Flight Envelopes & QRH SOP Matrix
-
-| Abnormal Event | Severity | Predicted Pilot Action | Recommended QRH SOP Checklist |
-| :--- | :--- | :--- | :--- |
-| **Stall Warning** | `Critical` | Lower Pitch & Add Power | Disconnect AP, smoothly apply forward elevator, roll wings level, advance thrust levers to TOGA, verify speedbrakes retracted. |
-| **Wind Shear / Microburst** | `Critical` | Wind Shear Escape Maneuver | Advance thrust to max TOGA, rotate smoothly to 15° pitch up, follow Flight Director, wings level, maintain configuration until clear. |
-| **Excessive Descent Rate** | `High` | Stabilize Descent & Add Power | Advance thrust levers by 15-20%, adjust pitch to establish 3° glidepath, arrest descent below -800 fpm; if below 500ft execute Go-Around. |
-| **Overspeed Condition** | `High` | Reduce Throttle & Speedbrakes | Retard thrust levers to Flight Idle, extend speedbrakes to flight detent, gently level pitch attitude, verify airspeed below Vmo. |
-| **Terrain Alert (CFIT)** | `Critical` | Immediate Climb Max Thrust | Disconnect AP, advance thrust to TOGA, aggressively rotate pitch to 20° nose up / stick shaker, level wings to maximize vertical vector. |
-| **Engine Flameout** | `Critical` | Maintain Best Glide & Divert | Confirm failed engine idle, apply rudder trim toward operating engine, establish Green Dot glide speed, select continuous ignition, declare MAYDAY/PAN-PAN. |
-| **High Bank Angle** | `High` | Level Wings & Reduce Bank | Roll wings level with smooth lateral stick input, cross-check standby attitude indicator, modulate thrust to prevent stall or overspeed. |
-| **Cabin Pressure Loss** | `Critical` | Emergency Descent to 10k ft | Don oxygen masks (100%/Emergency), establish crew communications, thrust idle, speedbrakes full extended, descend at max safe speed to 10,000 ft MSL. |
-
----
-
-## 💻 Folder Structure
+## 📁 Project Directory Structure
 
 ```
 AI-Co-Pilot-using-Machine-Learning/
 │
-├── backend/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── routes_copilot.py      # /predict, /risk-score, /recommendation, /explain
-│   │   │   ├── routes_telemetry.py    # /telemetry/live, /telemetry/scenarios, /telemetry/control
-│   │   │   ├── routes_simulator.py    # /simulator/what-if, /simulator/scenarios/{id}
-│   │   │   ├── routes_incidents.py    # /incidents/asrs, /incidents/{id}/replay
-│   │   │   └── routes_analytics.py    # /analytics/metrics, /analytics/safety-trends
-│   │   ├── db/
-│   │   │   ├── models.py              # SQLAlchemy ORM (Flight, Telemetry, Incident, Prediction)
-│   │   │   ├── database.py            # SQLite/PostgreSQL Session engine
-│   │   │   └── seed_data.py           # NASA ASRS incident seeder
-│   │   ├── ml/
-│   │   │   ├── dataset_generator.py   # OpenSky telemetry & NASA ASRS synthesizer
-│   │   │   ├── preprocessor.py        # Aerodynamic feature scaler & windowing
-│   │   │   ├── models.py              # Sequential Attention Neural Network & Risk Scorer
-│   │   │   ├── explainer.py           # SHAP factor rankings & Attention maps
-│   │   │   ├── inference.py           # Low-latency unified inference orchestrator
-│   │   │   └── train.py               # End-to-end model training & calibration
-│   │   ├── services/
-│   │   │   ├── flight_simulator.py    # Live telemetry streaming & digital twin state
-│   │   │   └── recommendation_engine.py# QRH checklists & voice speech generator
-│   │   ├── config.py                  # Environment settings & thresholds
-│   │   └── main.py                    # FastAPI app & WebSocket stream
-│   ├── saved_models/                  # Serialized weights, preprocessors & benchmarks
-│   ├── tests/                         # Pytest unit & integration test suite
-│   ├── requirements.txt               # Backend dependencies
-│   └── Dockerfile
+├── data/
+│   ├── manuals/
+│   │   ├── pdf/                     # Local FCOM / QRH PDF storage
+│   │   │   └── TEST_FLIGHT_MANUAL.pdf (Synthetic demo manual)
+│   │   └── processed/
+│   │       └── chroma/              # Persistent ChromaDB vector database
+│   ├── processed/
+│   │   ├── asrs_clean.csv           # 6,978 Cleaned NASA ASRS incident records
+│   │   ├── opensky_metadata_clean.csv # 832 Cleaned Squawk 7700 records
+│   │   └── reports/
+│   └── raw/
+│       ├── asrs/
+│       └── opensky/
+│
+├── rag/
+│   ├── __init__.py
+│   ├── ingest.py                    # PDF text extraction, section detection & chunking
+│   ├── retriever.py                 # Cosine similarity retrieval & fleet filtering
+│   ├── embeddings.py                # Local ONNX all-MiniLM-L6-v2 & OpenAI provider
+│   ├── vector_store.py              # ChromaDB persistent collection management
+│   └── prompts.py                   # Grounded RAG prompts & citation generator
+│
+├── voice/
+│   ├── __init__.py
+│   ├── stt.py                       # Speech-to-text abstraction (Web Speech / Whisper)
+│   └── tts.py                       # Text-to-speech abstraction (SpeechSynthesis / TTS)
+│
+├── api/
+│   ├── __init__.py
+│   ├── copilot_api.py               # FastAPI backend serving API & cockpit UI
+│   ├── intent.py                    # Aviation intent parsing & conversational memory
+│   └── risk_service.py              # NASA ASRS & OpenSky risk analysis adapter
 │
 ├── frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── page.tsx               # 🏠 Home Cockpit Overview
-│   │   │   ├── monitor/page.tsx       # 🛫 Real-Time Flight Monitor & Map
-│   │   │   ├── copilot/page.tsx       # 🤖 AI Co-Pilot & QRH Decision Assistant
-│   │   │   ├── simulator/page.tsx     # 🧪 What-If Parameter Perturbation Simulator
-│   │   │   ├── incidents/page.tsx     # ⚠️ NASA ASRS Black Box Telemetry Replay
-│   │   │   ├── explainability/page.tsx# 📊 Explainable AI (SHAP & Attention)
-│   │   │   ├── analytics/page.tsx     # 📈 ML Performance & Confusion Matrix Hub
-│   │   │   ├── layout.tsx             # Root layout with Cockpit Header & Avionics Footer
-│   │   │   └── globals.css            # Orbitron font, glassmorphism & HUD scanlines
-│   │   ├── components/
-│   │   │   ├── cockpit/               # PFD HUD, Risk Gauge, Confidence Meter, Alerts
-│   │   │   ├── telemetry/             # Streaming Recharts & Leaflet Flight Map
-│   │   │   ├── simulator/             # What-If sliders & instant inference
-│   │   │   ├── xai/                   # SHAP waterfall & Attention heatmap
-│   │   │   ├── incidents/             # ASRS browser & DFDR replayer
-│   │   │   └── analytics/             # Confusion matrix & validation charts
-│   │   ├── hooks/                     # useFlightTelemetry hook
-│   │   ├── lib/                       # API client & Web Audio synthesis
-│   │   └── types/                     # TypeScript data interfaces
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── Dockerfile
+│   ├── index.html                   # Glass cockpit HUD telemetry interface
+│   ├── style.css                    # Dark cockpit theme, annunciators, CRT scanlines
+│   └── app.js                       # PTT voice loop, waveform canvas, interactive cards
 │
-├── notebooks/
-│   ├── 01_asrs_preprocessing_and_nlp.ipynb
-│   ├── 02_opensky_telemetry_features.ipynb
-│   ├── 03_sequential_lstm_and_risk_training.ipynb
-│   └── 04_explainability_shap.ipynb
+├── tests/
+│   ├── __init__.py
+│   └── test_copilot.py              # 10 unit & integration tests
 │
-├── docker-compose.yml
+├── src/data/                        # Original data preprocessing pipelines
+│   ├── clean_asrs.py
+│   ├── clean_opensky.py
+│   ├── inspect_trajectories.py
+│   └── profile_datasets.py
+│
+├── requirements.txt
+├── .env.example
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 🚀 Quick Start Guide
+## ⚡ Quickstart Guide
 
-### Prerequisites
-- **Python 3.10+**
-- **Node.js 18+** & **npm**
+### 1. Environment Setup
 
----
+Create and activate a virtual environment:
 
-### Method 1: Local Setup
-
-#### 1. Backend Setup
-```bash
-# Navigate to backend and install dependencies
-pip install -r backend/requirements.txt
-
-# Run ML model training & data calibration
-python -c "import sys; sys.path.insert(0, '.'); from backend.app.ml.train import train_all_models; train_all_models()"
-
-# Run automated backend test suite
-python -m pytest backend/tests/
-
-# Start FastAPI backend server
-uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+**Windows (PowerShell):**
+```powershell
+python -m venv venv
+.\venv\Scripts\activate
 ```
-*Backend runs at `http://localhost:8000` (API Docs at `http://localhost:8000/docs`).*
 
-#### 2. Frontend Setup
+**macOS / Linux:**
 ```bash
-# In a new terminal, navigate to frontend
-cd frontend
-
-# Install npm dependencies
-npm install
-
-# Start Next.js development server
-npm run dev
+python3 -m venv venv
+source venv/bin/activate
 ```
-*Frontend cockpit opens at `http://localhost:3000`.*
 
----
-
-### Method 2: Docker Compose (One Command)
+### 2. Install Dependencies
 
 ```bash
-docker-compose up --build
+pip install -r requirements.txt
 ```
-- **Cockpit Dashboard**: `http://localhost:3000`
-- **FastAPI API & Swagger**: `http://localhost:8000/docs`
 
----
+### 3. Configure Environment Variables (Optional)
 
-## 📡 REST & WebSocket API Specification
+Copy `.env.example` to `.env`:
 
-### Core Endpoints
+```bash
+cp .env.example .env
+```
 
-| Method | Route | Description |
+| Variable | Description | Default |
 | :--- | :--- | :--- |
-| `POST` | `/api/predict` | Evaluates telemetry, predicts pilot action, risk score & QRH recommendation. |
-| `POST` | `/api/risk-score` | Calculates standalone 0–100 flight risk index and risk category. |
-| `POST` | `/api/recommendation` | Returns SOP directives, QRH checklists, voice text, and audio cues. |
-| `POST` | `/api/explain` | Returns SHAP feature attributions, waterfall factors, and attention weights. |
-| `GET` | `/api/telemetry/live` | Returns real-time live telemetry frame with PFD parameters and digital twin. |
-| `POST` | `/api/telemetry/scenario` | Switches active flight scenario (e.g., Stall, Wind Shear, Overspeed). |
-| `POST` | `/api/simulator/what-if` | Evaluates custom telemetry sliders in real-time with sub-3ms latency. |
-| `GET` | `/api/incidents/asrs` | Searches and filters NASA ASRS incident reports. |
-| `GET` | `/api/incidents/{id}/replay` | Fetches DFDR time-series telemetry for Black Box incident replay. |
-| `GET` | `/api/analytics/metrics` | Returns model accuracy, ROC-AUC, F1, and 9x9 confusion matrix. |
-| `WS` | `/ws/telemetry` | Real-time WebSocket pushing 2Hz–10Hz live cockpit telemetry updates. |
+| `LLM_API_KEY` | OpenAI API key (optional; system runs 100% offline without it) | `""` |
+| `LLM_MODEL` | LLM model identifier | `gpt-4o-mini` |
+| `LLM_BASE_URL` | Base URL for LLM provider (Ollama, Groq, OpenRouter) | `https://api.openai.com/v1` |
+| `EMBEDDING_MODEL` | Local embedding model | `all-MiniLM-L6-v2` |
+| `CHROMA_PERSIST_DIRECTORY` | ChromaDB vector storage directory | `data/manuals/processed/chroma` |
+
+> [!NOTE]
+> **No API Key Required**: If `LLM_API_KEY` is omitted, the Copilot automatically uses its high-fidelity deterministic extractive RAG synthesizer, guaranteeing zero-hallucination operational responses directly from the indexed flight manuals.
 
 ---
 
-## 🧪 Jupyter Notebooks Guide
+## 📚 Adding & Indexing Flight Manuals
 
-The `notebooks/` directory includes 4 comprehensive data science walkthroughs:
-1. **`01_asrs_preprocessing_and_nlp.ipynb`**: NASA ASRS incident report tokenization and semantic feature extraction.
-2. **`02_opensky_telemetry_features.ipynb`**: OpenSky Network sliding window creation and energy state metrics.
-3. **`03_sequential_lstm_and_risk_training.ipynb`**: Sequential model training, validation curves, and confusion matrix.
-4. **`04_explainability_shap.ipynb`**: SHAP feature importance calculations and temporal attention maps.
+### Copyright & Safety Protection
+The system **does not automatically download or scrape** copyrighted Boeing or Airbus flight manuals. You must place your own legally acquired operator flight manuals into:
+
+```
+data/manuals/pdf/
+```
+
+Example supported manuals:
+- `Boeing_787_FCOM.pdf`
+- `Boeing_787_QRH.pdf`
+- `Airbus_A350_FCOM.pdf`
+- `Airbus_A350_QRH.pdf`
+
+### Indexing Manuals
+
+To index manuals into the vector store:
+
+```bash
+python -m rag.ingest
+```
+
+To rebuild the vector store from scratch:
+
+```bash
+python -m rag.ingest --rebuild
+```
+
+You can also drag-and-drop or upload PDF manuals directly from the cockpit UI using the **📂 MANUALS** drawer button.
 
 ---
 
-## 📜 License & Acknowledgements
+## 🧪 Demo Mode (Hackathon / Presentation Mode)
 
-Developed for advanced AI-driven aviation decision support, pilot training, and flight safety operations.  
-*Calibrated on NASA Aviation Safety Reporting System (ASRS) and OpenSky Network aerospace telemetry standards.*
+If no operational manuals are installed, the system automatically enables **Demo Mode** using a synthetic test manual (`TEST_FLIGHT_MANUAL.pdf`) with fictional procedures covering:
+- Engine 2 Vibration Exceedance Checklist (Page 1)
+- Dual Engine Flameout & Relight Procedure (Page 2)
+- Rapid Cabin Depressurization & Emergency Descent (Page 3)
+- Hydraulic System B Leak & Low Pressure QRH (Page 4)
+- Windshear Warning Escape Maneuver (Page 5)
+
+Generate and index the demo manual at any time:
+
+```bash
+python -m rag.ingest --create-demo-manual
+```
+
+---
+
+## 🚀 Running the AI Co-Pilot
+
+Start the FastAPI backend server (which automatically hosts both the REST API and the Cockpit Web Interface):
+
+```bash
+uvicorn api.copilot_api:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Open your browser to:
+👉 **`http://127.0.0.1:8000/`**
+
+---
+
+## 🎙 Voice Interaction & Cockpit Controls
+
+1. **Push-To-Talk (PTT)**: Click the center **🎙 PRESS & SPEAK** button.
+2. **Audio State Machine**:
+   - 🟢 `IDLE` (SYSTEM READY)
+   - 🎙 `LISTENING` (PTT ACTIVE)
+   - 📝 `TRANSCRIBING`
+   - 🔎 `SEARCHING FLIGHT MANUAL`
+   - 🤖 `GENERATING RESPONSE`
+   - 🔊 `TRANSMITTING VOICE`
+   - ⚠️ `SYSTEM ADVISORY`
+3. **Cockpit HUD Controls**:
+   - **🔊 SPEAK**: Replays or reads the AI decision-support advice aloud.
+   - **🔇 STOP**: Immediately silences ongoing speech.
+   - **🗑 CLEAR**: Resets conversation history and memory.
+   - **FLEET SELECT**: Filters retrieval context by fleet (`B787`, `A350`, `B777`, `A320`, or `ALL`).
+
+---
+
+## 📘 Exact Citation Verification
+
+Every flight manual statement includes structured citations formatted as:
+```
+[Document_Name.pdf, Page X, Section Y]
+```
+
+In the cockpit interface:
+- Citations appear as interactive cards showing document title, page number, fleet, and semantic score.
+- **Clicking any citation card** immediately displays the exact raw extracted paragraph in an inspector window for instant verification.
+
+---
+
+## 📊 Integration with ASRS & OpenSky ML Risk Engine
+
+When a pilot asks risk or safety-related questions (e.g., *"Analyze risk of engine vibration during cruise"*), the copilot routes the query to `api/risk_service.py`:
+- Filters **6,978 NASA ASRS** reports and **832 OpenSky Squawk 7700** emergency flights.
+- Computes operational severity distributions (`High`, `Medium`, `Low`).
+- Analyzes empirical in-flight diversion rates.
+- Reports historical pilot recovery actions and representative incident narratives.
+
+---
+
+
+---
+
+## 🌐 3D Synthetic Vision System (SVS) & Weather Radar
+
+The system features a real-time, interactive **3D Cockpit Synthetic Vision System (SVS)** built with **Three.js**, designed to provide situational awareness in instrument and adverse weather conditions.
+
+```
+                  ┌───────────────────────────────────────────────┐
+                  │          Real-Time SVS Data Orchestrator       │
+                  │             (OpenSky / Synthetic Telemetry)    │
+                  └──────────────┬────────────────┬───────────────┘
+                                 │                │
+            ┌────────────────────┴───┐        ┌───┴───────────────────┐
+            │                        │        │                       │
+            ▼                        ▼        ▼                       ▼
+   ┌─────────────────┐     ┌─────────────────┐ ┌──────────────┐ ┌──────────────────┐
+   │ 3D Elevation    │     │ Aircraft Jet    │ │ Runway 07L   │ │ 3D Weather Radar │
+   │ Terrain Engine  │     │ Dynamics & Path │ │ & ILS Glide  │ │ (dBZ Cells &     │
+   │ (CFIT Warning)  │     │ (Risk Ribbon)   │ │ Slope Tunnel │ │  Sweep Fan)      │
+   └────────┬────────┘     └────────┬────────┘ └──────┬───────┘ └────────┬─────────┘
+            │                       │                 │                  │
+            └───────────────────┐   │   ┌─────────────┘                  │
+                                ▼   ▼   ▼                                ▼
+                        ┌────────────────────────────────────────────────────────┐
+                        │      Three.js WebGL Cockpit Render Pipeline            │
+                        │   (60 FPS | Chase / Top / Front / Approach Views)      │
+                        └───────────────────┬────────────────────────────────────┘
+                                            │
+                                            ▼
+                        ┌────────────────────────────────────────────────────────┐
+                        │      Primary Flight Display (PFD) HUD Overlay          │
+                        │ (IAS & ALT Tapes | Pitch Ladder | Annunciators | Risk) │
+                        └────────────────────────────────────────────────────────┘
+```
+
+### 1. Three.js SVS Architecture
+Located in [`frontend/svs/`](file:///frontend/svs/):
+- **[`svs.js`](file:///frontend/svs/svs.js)**: Central WebGL orchestrator managing Three.js scene, camera frustum, OrbitControls, 60 FPS animation loop, telemetry simulation, and HUD synchronization.
+- **[`terrain.js`](file:///frontend/svs/terrain.js)**: Procedural 3D elevation terrain mesh (20,000m x 20,000m) with harmonic noise synthesis, valley contours, altitude colormapping, synthetic wireframe HUD grid, and pulsing CFIT hazard mesh.
+- **[`aircraft.js`](file:///frontend/svs/aircraft.js)**: Procedural commercial aircraft (fuselage, swept wings, winglets, tail fin, jet engines, navigation strobes, flight path vector symbol) and dynamic 3D flight trajectory ribbon color-coded by risk (`NORMAL`, `CAUTION`, `WARNING`).
+- **[`runway.js`](file:///frontend/svs/runway.js)**: 3,200m asphalt runway (RWY 07L/25R) with threshold piano keys, centerline dashed markings, touchdown zone bars, Approach Lighting System (ALS), and 3.0° ILS glideslope corridor boxes.
+- **[`hazards.js`](file:///frontend/svs/hazards.js)**: 3D obstacle warning cones, broadcast antenna towers, and flashing obstruction strobes with proximity detection.
+- **[`weather.js`](file:///frontend/svs/weather.js)**: 3D volumetric radar storm cells (dBZ scale), reflectivity contours, rotating airborne radar sweep fan beam, and falling rain particles.
+
+### 2. Primary Flight Display (PFD) HUD Overlay
+- **Indicated Airspeed (IAS) Tape**: Real-time airspeed in knots with 10-knot graduation ticks.
+- **Barometric Altitude (ALT) Tape**: Live altitude tape in feet MSL with numeric readout.
+- **Heading Compass Tape**: Horizon-top magnetic compass tape showing current track/heading.
+- **Vertical Speed Indicator (V/S)**: Climb/descent rate in feet per minute (FPM).
+- **Pitch Ladder & Artificial Horizon**: Roll angle indicator and pitch reference bars.
+- **Flight Path Marker (Bird)**: Shows current aircraft vector relative to the horizon.
+- **System Annunciators**: Real-time status chips (`GPS: 3D FIX`, `TERR: NORM`, `WX: RADAR`, `SVS: 60 FPS`).
+- **CFIT Warning Banner**: Flashing red `⚠ PULL UP — TERRAIN AHEAD` alert when clearance thresholds are breached.
+
+### 3. Flight Situation & Hazard Matrix
+The right-side cockpit telemetry panel updates dynamically based on the 3D spatial model:
+- **Terrain Clearance**: AGL clearance and minimum terrain altitude in projected flight corridor.
+- **Obstacle Proximity**: Distance and vertical clearance to the nearest obstacle tower/mast.
+- **Weather Risk**: Proximity and reflectivity of the closest convective weather cell.
+- **Glide Path**: ILS deviation in dots and recommended vertical action (`ON PATH`, `FLY DOWN`, `FLY UP`).
+- **CFIT Proximity**: Overall terrain collision risk (`LOW / DEMO STATUS`, `CAUTION`, `CRITICAL`).
+
+### 4. Cockpit Controls & View Switcher
+- **View Modes**:
+  - `[🎙 VOICE & FCOM]`: Dedicated conversational AI & RAG flight manual investigation view.
+  - `[⚡ SPLIT VIEW]`: Dual-cockpit layout showing the 3D SVS display alongside the voice copilot.
+  - `[🛩 3D SVS FULL]`: Full-screen glass cockpit 3D Synthetic Vision display.
+- **Camera Presets**:
+  - `[CHASE]`: Behind and slightly above the aircraft tracking flight dynamics.
+  - `[TOP]`: Top-down tactical navigation view.
+  - `[FRONT]`: Cockpit pilot-eye view looking ahead through the windshield.
+  - `[APPROACH]`: Looking from runway threshold back towards the approaching aircraft.
+  - `[RESET]`: Restores default camera distance and orientation.
+- **Layer Toggles**:
+  - `[Terrain]`: Toggle 3D mountains, valleys, and wireframe grid.
+  - `[Weather]`: Toggle 3D weather radar cells, radar sweep fan, and rain particles.
+  - `[Obstacles]`: Toggle 3D obstacle cones and hazard warning zones.
+  - `[Flight Path]`: Toggle the projected flight trajectory ribbon.
+  - `[Glide Path]`: Toggle the 3.0° ILS glideslope corridor boxes.
+- **OpenSky Flight Selector**: Switch live telemetry between cleaned emergency flights (`ARG1511`, `DAL214`, `UAL901`, `SWA182`, `BAW49`) or synthetic demo profile.
+
+### 5. Weather Radar & External Data Pipeline
+- **Weather Abstraction Model**:
+  ```
+  NOAA / NWS API Proxy  ──►  Weather Normalization  ──►  Volumetric 3D Cells
+           │ (On Failure/CORS)            │                      (dBZ Colormap)
+           └──────────────────────► Demo Simulation ─────────────┘
+  ```
+- **Standard dBZ Palette**:
+  - Green (`< 30 dBZ`): Light precipitation
+  - Yellow (`30 - 40 dBZ`): Moderate rain
+  - Orange (`40 - 50 dBZ`): Heavy precipitation
+  - Red (`50 - 60 dBZ`): Strong convective storm
+  - Magenta (`> 60 dBZ`): Severe thunderstorm / hail risk
+- **Live vs Simulation Labeling**: The interface explicitly distinguishes `LIVE DATA` from `SIMULATION DATA` via cockpit annunciators and the radar legend.
+
+### 6. Voice AI & SVS Integration
+Pilots can control the 3D SVS display directly using voice commands or the PTT radio loop:
+- *"Co-Pilot, show terrain risk."* ➔ Switches to SVS split view and highlights terrain hazard mesh.
+- *"Show the weather around the current route."* ➔ Enables the 3D weather radar overlay and displays nearest convective cells.
+- *"Co-Pilot, what is the glide path status?"* ➔ Evaluates ILS glideslope deviation and reports dots above/below path.
+
+---
+
+## 📡 Complete API Reference
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/` | Glass Cockpit Web HUD & 3D SVS Interface |
+| `POST` | `/api/copilot/query` | Process pilot voice/text query with RAG, Risk & SVS intent |
+| `GET` | `/api/copilot/health` | System status, indexed documents, and mode |
+| `GET` | `/api/manuals` | List detected and indexed PDF flight manuals |
+| `POST` | `/api/manuals/ingest` | Trigger manual ingestion or rebuild |
+| `POST` | `/api/manuals/upload` | Upload PDF manual via multipart form |
+| `GET` | `/api/copilot/demo` | Initialize synthetic demo manual & sample queries |
+| `POST` | `/api/copilot/clear` | Clear conversational memory for session |
+| `POST` | `/api/copilot/transcribe` | Backend audio transcription (Whisper / Mock) |
+| `POST` | `/api/copilot/speak` | Backend text-to-speech synthesis |
+| `GET` | `/api/svs/status` | Current 3D SVS engine state, mode, and capabilities |
+| `GET` | `/api/svs/aircraft` | Real-time aircraft telemetry, trajectory, and hazard evaluation |
+| `GET` | `/api/svs/terrain` | Digital elevation model, grid specifications, and CFIT zones |
+| `GET` | `/api/svs/runway` | Runway 07L/25R geometry, coordinates, and 3.0° ILS parameters |
+| `GET` | `/api/svs/obstacles` | Known obstruction database (cones, masts, antennas) |
+| `GET` | `/api/weather` | 3D volumetric weather radar cells and reflectivity matrix |
+| `GET` | `/api/weather/status` | Weather service provider status (NOAA proxy vs Simulation) |
+| `POST` | `/api/svs/simulation` | Configure SVS simulation or switch active OpenSky flight |
+
+---
+
+## 🚀 Installation & Quick Start
+
+### 1. Prerequisites
+- Python 3.10+
+- Modern WebGL-compatible browser (Chrome, Edge, Firefox, Brave)
+
+### 2. Environment Setup
+```bash
+# Clone the repository (if applicable)
+cd AI-Co-Pilot-using-Machine-Learning
+
+# Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\activate   # Windows
+source venv/bin/activate  # macOS / Linux
+
+# Install backend dependencies
+pip install fastapi uvicorn pydantic python-dotenv pypdf chromadb openai pandas python-multipart httpx
+```
+
+### 3. Launching Backend & Serving Frontend
+```bash
+# Start the FastAPI server with reload
+uvicorn api.copilot_api:app --host 127.0.0.1 --port 8000 --reload
+```
+Open your browser to:
+```
+http://127.0.0.1:8000/
+```
+The FastAPI backend serves the static frontend directly from `frontend/` including all SVS modules at `/svs/`.
+
+---
+
+## 🧪 Automated Test Suites
+
+### 1. SVS Unit & Integration Tests (10/10 Tests)
+```bash
+python -m unittest tests/test_svs.py
+```
+Coverage:
+1. `test_01_aircraft_state_parsing`: Validates flight telemetry parsing (pitch, roll, altitude, speed).
+2. `test_02_opensky_data_conversion`: Validates mapping from `opensky_metadata_clean.csv` to 3D SVS state.
+3. `test_03_terrain_grid_generation`: Tests digital elevation model bounds, elevation limits, and grid resolution.
+4. `test_04_runway_generation`: Tests Runway 07L/25R geometry, threshold coordinates, and centerline heading.
+5. `test_05_glidepath_calculation`: Verifies 3.0° ILS glideslope altitude calculation and deviation dots.
+6. `test_06_obstacle_detection`: Tests obstacle cone proximity buffer and vertical clearance alerting.
+7. `test_07_weather_data_normalization`: Validates weather radar cell normalization, dBZ palettes, and intensity bounds.
+8. `test_08_demo_weather_generation`: Verifies synthetic radar cell generation when live radar is unavailable.
+9. `test_09_api_endpoints`: Verifies all `/api/svs/*` and `/api/weather/*` endpoints respond with 200 OK.
+10. `test_10_voice_intent_and_svs_integration`: Verifies voice intent routing to `SVS_QUERY` and `WEATHER_QUERY`.
+
+### 2. Conversational Voice AI & FCOM RAG Tests (10/10 Tests)
+```bash
+python -m unittest tests/test_copilot.py
+```
+
+---
+
+## 🔧 Troubleshooting
+
+| Issue | Cause | Solution |
+| :--- | :--- | :--- |
+| **WebGL Not Supported** | Browser hardware acceleration disabled | Enable Hardware Acceleration in browser settings (`chrome://settings/system`). |
+| **SVS Canvas Blank** | Three.js CDN blocked or offline | Ensure internet access for CDN scripts or bundle `three.min.js` locally. |
+| **Weather Status: SIMULATION** | NOAA/NWS API timeout or foreign coordinates | System automatically and safely falls back to high-fidelity simulated radar cells. |
+| **Microphone Not Permitted** | Browser security restriction | Allow microphone access for `http://127.0.0.1:8000` or use the keyboard PTT button. |
+| **ChromaDB Rebuild Needed** | Manual ingestion out of sync | Click `[SYNC MANUALS]` in the top header or run `POST /api/manuals/ingest`. |
+
+---
+
+## ⚠️ Aviation Safety & Research Notice
+
+This software is developed strictly for **aviation research, simulation, academic demonstration, and engineering decision-support prototyping**.
+
+- The 3D Synthetic Vision System (SVS) is **NOT** a certified Primary Flight Display (PFD) or certified Synthetic Vision avionics system (such as FAA AC 20-167 / TSO-C198).
+- The Terrain Warning system is **NOT** a certified Terrain Awareness and Warning System (TAWS / EGPWS / TSO-C151).
+- The Weather Radar overlay is **NOT** a certified airborne or tactical weather radar system and does not replace official meteorological SIGMETs/METARs.
+- This software must **never** be used for primary aircraft navigation, flight dispatch, or in-flight maneuvering.
+- All operational procedures must be verified against official airline dispatch, Aircraft Flight Manuals (AFM), Flight Crew Operating Manuals (FCOM), and Quick Reference Handbooks (QRH).

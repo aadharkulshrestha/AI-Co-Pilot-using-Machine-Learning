@@ -32,3 +32,14 @@ frontend/.env.production.local
 .DS_Store
 Thumbs.db
 
+
+# Python & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+
+# ChromaDB persistence & processed manuals cache
+data/manuals/processed/chroma/
