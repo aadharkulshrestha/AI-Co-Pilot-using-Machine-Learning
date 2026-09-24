@@ -1,6 +1,37 @@
-# Ignore large data files
+# Large raw trajectory parquet files
 data/raw/opensky/squawk7700_trajectories.parquet.gz
 dataset/squawk7700_trajectories.parquet.gz
+
+# Python caches and virtualenvs
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+
+# Databases & local sqlite
+*.db
+backend/copilot.db
+
+# Frontend (Node / Next.js)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
 
 # Python & Environments
 __pycache__/
