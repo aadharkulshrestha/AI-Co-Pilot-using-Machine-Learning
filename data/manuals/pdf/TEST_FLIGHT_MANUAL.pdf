@@ -1,0 +1,171 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R 10 0 R 12 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1419 >>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+14 TL
+(SECTION 7 - ENGINE INDICATIONS & ABNORMALS) Tj T* T*
+(BOEING 787 / AIRBUS TEST FLIGHT MANUAL \(SYNTHETIC DEMO EDITION\)) Tj T*
+T*
+(7.1 ENGINE VIBRATION INDICATION \(N1 / N2 EXCEEDANCE\)) Tj T*
+T*
+(CONDITION: High engine vibration levels indicated on Engine Indication and Crew Alerting System \(EICAS\) or Electronic Centralized Aircraft Monitor \(ECAM\).) Tj T*
+(Vibration display illuminates AMBER when broadband vibration index exceeds 4.0 units on either spool.) Tj T*
+T*
+(PILOT ACTION / CREW RESPONSE:) Tj T*
+(1. Thrust Lever \(affected engine\): Retard slowly toward IDLE until vibration decreases below 2.5 units.) Tj T*
+(2. If vibration remains above 4.0 units accompanied by abnormal secondary engine indications \(high ITT/EGT, abnormal oil pressure, or violent airframe buffet\):) Tj T*
+(   - Conclude severe engine mechanical damage exists.) Tj T*
+(   - Execute ENGINE SHUTDOWN CHECKLIST.) Tj T*
+(   - Set Autothrottle / A/THR to DISENGAGE on affected channel.) Tj T*
+(3. If vibration decreases to normal operational range with thrust reduction:) Tj T*
+(   - Maintain reduced thrust for remainder of flight.) Tj T*
+(   - Plan descent and landing at nearest suitable diversion airport.) Tj T*
+(   - Cross-check fuel balancing and bleed air configurations.) Tj T*
+(4. Do NOT attempt engine relight if high vibration was accompanied by abnormal noise or uncommanded yaw.) Tj T*
+ET
+endstream
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 943 >>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+14 TL
+(SECTION 8 - DUAL ENGINE FAILURE & RELIGHT) Tj T* T*
+(8.2 DUAL ENGINE FLAMEOUT / RELIGHT PROCEDURE) Tj T*
+T*
+(CONDITION: Sudden loss of thrust on all engines at cruising altitude.) Tj T*
+T*
+(IMMEDIATE MEMORY ITEMS:) Tj T*
+(1. Airspeed: Establish and maintain 270 KIAS optimum glide speed / windmill relight speed.) Tj T*
+(2. APU \(Auxiliary Power Unit\): START switch to ON. Verify APU generator online within 60 seconds.) Tj T*
+(3. RAT \(Ram Air Turbine\): Manual deploy handle PULL if electrical emergency bus not automatically powered.) Tj T*
+(4. Engine Start Switches: Set to CONT \(Continuous Ignition\).) Tj T*
+(5. Thrust Levers: Retard to IDLE to prevent fuel pooling during restart cycle.) Tj T*
+(6. Crew Coordination: Notify ATC via Mayday broadcast on 121.5 MHz; Squawk 7700.) Tj T*
+(7. Altitude: Determine glide distance to nearest suitable runway \(approx 2.5 NM per 1,000 ft altitude lost\).) Tj T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 929 >>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+14 TL
+(SECTION 2 - EMERGENCY DESCENT PROCEDURES) Tj T* T*
+(2.4 RAPID CABIN DEPRESSURIZATION & EMERGENCY DESCENT) Tj T*
+T*
+(CONDITION: Cabin altitude exceeds 10,000 feet or CABIN ALTITUDE WARNING alert illuminates.) Tj T*
+T*
+(CREW IMMEDIATE ACTIONS:) Tj T*
+(1. Oxygen Masks: DON, Set 100% and Emergency Flow.) Tj T*
+(2. Crew Communications: Establish interphone communication through mask microphones.) Tj T*
+(3. Flight Controls: Initiate immediate emergency descent.) Tj T*
+(   - Autopilot: DISENGAGE or select FLCH / OPEN DESCENT.) Tj T*
+(   - Thrust Levers: IDLE.) Tj T*
+(   - Speedbrake: EXTEND fully.) Tj T*
+(   - Target Altitude: Descend immediately to 10,000 feet MSL or Minimum Enroute IFR Altitude \(MEA\), whichever is higher.) Tj T*
+(4. Passenger Oxygen: Verify passenger oxygen masks deployed \(overhead switch OVERRIDE\).) Tj T*
+(5. Transponder: Select SQUAWK 7700 on ATC transponder.) Tj T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 974 >>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+14 TL
+(SECTION 13 - HYDRAULIC SYSTEMS) Tj T* T*
+(13.3 HYDRAULIC SYSTEM B LEAK / LOW PRESSURE) Tj T*
+T*
+(CONDITION: Hydraulic System B reservoir quantity below 10% and low pressure warning active.) Tj T*
+T*
+(OPERATIONAL IMPACT:) Tj T*
+(Normal landing gear extension may be inoperative. Alternate gear extension via gravity drop will be required.) Tj T*
+(Inboard flight spoilers and left thrust reverser may have degraded response times.) Tj T*
+T*
+(PROCEDURES:) Tj T*
+(1. Hydraulic Pump B: Switch to OFF to prevent pump cavitation and thermal damage.) Tj T*
+(2. Flaps / Slats: Plan approach using Flap 20 or designated abnormal configuration.) Tj T*
+(3. Approach Speed: Compute VREF + 20 knots additive for degraded spoiler braking.) Tj T*
+(4. Landing Distance: Multiply dry runway landing distance by factor of 1.45.) Tj T*
+(5. Nose Wheel Steering: System B loss causes loss of normal nosewheel steering; plan towing off runway after rollout.) Tj T*
+ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 1028 >>
+stream
+BT
+/F1 12 Tf
+50 750 Td
+14 TL
+(SECTION 16 - ADVERSE WEATHER OPERATIONS) Tj T* T*
+(16.7 WINDSHEAR WARNING ON APPROACH & TAKEOFF) Tj T*
+T*
+(CONDITION: Automated 'WINDSHEAR! WINDSHEAR! WINDSHEAR!' audio warning sounds or severe airspeed deviation \(>15 kts\) during final approach.) Tj T*
+T*
+(ESCAPE MANEUVER PROCEDURE:) Tj T*
+(1. Thrust Levers: Disconnect Autothrottle and smoothly advance to MAXIMUM TAKEOFF/GO-AROUND THRUST \(TOGA\).) Tj T*
+(2. Wings: Level wings and rotate smoothly toward initial pitch attitude of 15 degrees nose up.) Tj T*
+(3. Configuration: Do NOT change flap or gear configuration until clear of windshear conditions.) Tj T*
+(4. Flight Director: Follow Flight Director windshear guidance pitch cue if available; respect stick shaker stall margin.) Tj T*
+(5. Positive Rate: When clear of windshear and positive rate of climb established, retract gear and flaps per normal go-around procedure.) Tj T*
+(6. ATC Report: Report windshear encounter, altitude, and airspeed loss to ATC Tower immediately.) Tj T*
+ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000147 00000 n 
+0000000217 00000 n 
+0000001688 00000 n 
+0000001814 00000 n 
+0000002808 00000 n 
+0000002934 00000 n 
+0000003914 00000 n 
+0000004040 00000 n 
+0000005066 00000 n 
+0000005194 00000 n 
+0000006275 00000 n 
+trailer
+<< /Size 14 /Root 1 0 R >>
+startxref
+6403
+%%EOF

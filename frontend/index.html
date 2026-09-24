@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI CO-PILOT | 3D Synthetic Vision System &amp; FCOM Voice AI</title>
+  <meta name="description" content="AI Co-Pilot with 3D Synthetic Vision System (SVS), Weather Radar, FCOM manual retrieval, and aeronautical risk assessment.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+
+  <!-- Three.js 3D Graphics Library & OrbitControls via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- 3D SVS Modules -->
+  <script src="/static/svs/terrain.js"></script>
+  <script src="/static/svs/aircraft.js"></script>
+  <script src="/static/svs/runway.js"></script>
+  <script src="/static/svs/hazards.js"></script>
+  <script src="/static/svs/weather.js"></script>
+  <script src="/static/svs/svs.js"></script>
+</head>
+<body class="cockpit-theme view-split">
+
+  <!-- Cockpit Scanlines and Vignette Overlay -->
+  <div class="hud-overlay"></div>
+
+  <!-- Top Glass Cockpit Header -->
+  <header class="cockpit-header">
+    <div class="header-left">
+      <div class="hud-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="hud-title">AI CO-PILOT <span class="sub-accent">// 3D SVS &amp; FCOM</span></h1>
+        <div class="hud-subtitle">SYNTHETIC VISION SYSTEM • WEATHER RADAR • VOICE AI</div>
+      </div>
+    </div>
+
+    <!-- Annunciator Panel / Status Bar -->
+    <div class="annunciator-panel">
+      <div class="annunciator-lamp active" id="lamp-sys">
+        <span class="lamp-dot"></span> SYS: ONLINE
+      </div>
+      <div class="annunciator-lamp active" id="lamp-svs">
+        <span class="lamp-dot"></span> 3D SVS: ACTIVE
+      </div>
+      <div class="annunciator-lamp active" id="lamp-wx">
+        <span class="lamp-dot"></span> WX RADAR: READY
+      </div>
+      <div class="annunciator-lamp" id="lamp-rag">
+        <span class="lamp-dot"></span> FCOM: ACTIVE
+      </div>
+      <div class="demo-badge" id="demo-mode-tag">
+        🟡 SVS DEMO SIMULATION
+      </div>
+    </div>
+
+    <!-- Cockpit View Mode Switcher -->
+    <div class="cockpit-view-switcher">
+      <button class="btn-view-tab" id="tab-voice" title="Voice &amp; FCOM Decision Log">🎙 VOICE &amp; FCOM</button>
+      <button class="btn-view-tab active" id="tab-split" title="Split Screen (Dual Cockpit)">⚡ SPLIT VIEW</button>
+      <button class="btn-view-tab" id="tab-svs" title="3D Synthetic Vision Full View">🛩 3D SVS FULL</button>
+    </div>
+
+    <!-- Aircraft Fleet Selector & Manuals Drawer -->
+    <div class="header-right">
+      <div class="aircraft-selector-wrap">
+        <label for="aircraft-select">FLEET:</label>
+        <select id="aircraft-select" class="hud-select">
+          <option value="ALL">ALL FLEET</option>
+          <option value="B787" selected>BOEING 787</option>
+          <option value="A350">AIRBUS A350</option>
+          <option value="B777">BOEING 777</option>
+          <option value="A320">AIRBUS A320</option>
+        </select>
+      </div>
+      <button class="btn-hud-secondary" id="btn-open-manuals" title="Open Manuals &amp; Ingestion">
+        📂 MANUALS
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Cockpit Layout Container -->
+  <main class="cockpit-main-layout">
+
+    <!-- LEFT PANEL: Primary Voice Interface & Flight Deck Decision Log -->
+    <aside class="panel-left-voice" id="panel-voice-deck">
+      <div class="instrument-card voice-hud-card">
+        <div class="card-header">
+          <span class="card-label">PRIMARY FLIGHT VOICE INTERFACE</span>
+          <span class="hud-freq">RADIO: 121.500 / AGY-COPILOT</span>
+        </div>
+
+        <!-- State Annunciator Display -->
+        <div class="voice-state-display" id="voice-state-box">
+          <div class="state-icon" id="state-icon">🟢</div>
+          <div class="state-details">
+            <div class="state-caption">SYSTEM STATUS</div>
+            <div class="state-headline" id="state-headline">SYSTEM READY</div>
+          </div>
+        </div>
+
+        <!-- Radar Audio Waveform Canvas -->
+        <div class="visualizer-container">
+          <canvas id="waveform-canvas" width="400" height="75"></canvas>
+          <div class="hud-grid-crosshair"></div>
+        </div>
+
+        <!-- Voice PTT & Aux Controls -->
+        <div class="voice-controls-bar">
+          <button class="btn-voice-ptt" id="btn-ptt">
+            <span class="mic-icon-wrap">
+              <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </span>
+            <span class="ptt-text" id="ptt-label">PRESS &amp; SPEAK</span>
+          </button>
+
+          <div class="audio-aux-controls">
+            <button class="btn-hud-control" id="btn-speak-last" title="Read Aloud AI Response">🔊 SPEAK</button>
+            <button class="btn-hud-control" id="btn-stop-speech" title="Silence Speech">🔇 STOP</button>
+            <button class="btn-hud-control" id="btn-clear-chat" title="Clear Cockpit Log">🗑 CLEAR</button>
+          </div>
+        </div>
+
+        <!-- Quick Pilot Presets with SVS & Weather Integrations -->
+        <div class="quick-queries-panel">
+          <div class="quick-title">QUICK COCKPIT ACTIONS:</div>
+          <div class="quick-buttons-wrap">
+            <button class="btn-quick-query" data-query="Co-Pilot, show terrain risk in Synthetic Vision">
+              ⛰️ Show Terrain Risk
+            </button>
+            <button class="btn-quick-query" data-query="Show weather radar around current route">
+              🌧️ Weather Radar Scan
+            </button>
+            <button class="btn-quick-query" data-query="What does the manual say about engine 2 vibration?">
+              ⚙️ Engine 2 Vibration
+            </button>
+            <button class="btn-quick-query" data-query="What if the indication continues?">
+              🔄 Follow-Up: If Continues?
+            </button>
+            <button class="btn-quick-query" data-query="Show emergency descent checklist for cabin depressurization">
+              🚨 Cabin Depressurization
+            </button>
+            <button class="btn-quick-query" data-query="Analyze flight risk of engine vibration during cruise">
+              📊 Historical ASRS Risk
+            </button>
+          </div>
+        </div>
+
+        <!-- Text Input Fallback -->
+        <form class="text-input-form" id="query-form">
+          <input type="text" id="text-query-input" class="hud-input" placeholder="Type flight crew query or voice command..." autocomplete="off" />
+          <button type="submit" class="btn-hud-send" id="btn-submit-text">TRANSMIT</button>
+        </form>
+
+        <!-- Flight Deck Decision Log Stream -->
+        <div class="mini-log-card">
+          <div class="mini-log-header">
+            <span>DECISION LOG &amp; CITATIONS</span>
+            <span class="hud-telemetry" id="doc-counter">INDEXED: 1 MANUAL</span>
+          </div>
+          <div class="log-stream" id="log-stream">
+            <div class="log-entry system-entry">
+              <div class="entry-meta">
+                <span class="badge-role">COPILOT SYSTEM</span>
+                <span class="timestamp">UTC ACTIVE</span>
+              </div>
+              <div class="entry-content">
+                <p><strong>Aviation Co-Pilot initialized.</strong> 3D Synthetic Vision System (SVS) &amp; Weather Radar online.</p>
+                <p class="safety-disclaimer-inline">⚠️ <em>Research / Demonstration System — Not for Operational Flight Use.</em></p>
+              </div>
+            </div>
+          </div>
+          <div class="citation-inspector-wrap" id="citation-inspector">
+            <div class="citations-container" id="citations-container">
+              <div class="empty-citations-hint">No citations currently loaded.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT/CENTER PANEL: 3D Synthetic Vision System (SVS) & Weather Radar Display -->
+    <section class="panel-right-svs" id="panel-svs-deck">
+      <div class="instrument-card svs-viewport-card">
+
+        <!-- SVS Subheader Bar & Controls -->
+        <div class="svs-toolbar">
+          <div class="toolbar-section">
+            <span class="toolbar-title">3D VIEW:</span>
+            <div class="btn-group-toggle">
+              <button class="btn-hud-toggle active" id="toggle-terrain" title="Toggle 3D Terrain">TERRAIN</button>
+              <button class="btn-hud-toggle active" id="toggle-weather" title="Toggle Weather Radar">WEATHER</button>
+              <button class="btn-hud-toggle active" id="toggle-obs" title="Toggle Obstacles">OBSTACLES</button>
+              <button class="btn-hud-toggle active" id="toggle-path" title="Toggle Flight Path">FLIGHT PATH</button>
+              <button class="btn-hud-toggle active" id="toggle-glide" title="Toggle 3° Glide Path">GLIDE PATH</button>
+            </div>
+          </div>
+
+          <div class="toolbar-section">
+            <span class="toolbar-title">CAMERA:</span>
+            <div class="btn-group-camera">
+              <button class="btn-hud-camera active" data-cam="CHASE">CHASE</button>
+              <button class="btn-hud-camera" data-cam="FRONT">FRONT</button>
+              <button class="btn-hud-camera" data-cam="TOP">TOP</button>
+              <button class="btn-hud-camera" data-cam="APPROACH">APPROACH</button>
+              <button class="btn-hud-camera" data-cam="RESET">RESET</button>
+            </div>
+          </div>
+
+          <div class="toolbar-section opensky-select-section">
+            <span class="toolbar-title">OPENSKY FLIGHT:</span>
+            <select id="opensky-flight-select" class="hud-select hud-select-sm">
+              <option value="SIM_APPROACH_07L" selected>SIM APPROACH 07L (B787)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 3D WebGL Canvas Container -->
+        <div class="svs-canvas-wrapper" id="svs-canvas-container">
+
+          <!-- Aviation Heads-Up Display (HUD) Overlay -->
+          <div class="hud-glass-overlay">
+
+            <!-- Top Heading Compass Tape -->
+            <div class="hud-hdg-tape">
+              <span class="tape-marker">050</span>
+              <span class="tape-marker">060</span>
+              <span class="tape-marker active-hdg" id="hud-hdg-val">068°</span>
+              <span class="tape-marker">080</span>
+              <span class="tape-marker">090</span>
+            </div>
+
+            <!-- Left Airspeed Tape -->
+            <div class="hud-speed-tape">
+              <div class="tape-unit">IAS KT</div>
+              <div class="speed-box" id="hud-spd-val">155 KT</div>
+              <div class="speed-ticks">
+                <span>170</span>
+                <span>160</span>
+                <span class="active-tick">▶</span>
+                <span>150</span>
+                <span>140</span>
+              </div>
+            </div>
+
+            <!-- Center Pitch Ladder & Flight Path Marker -->
+            <div class="hud-pitch-ladder">
+              <div class="pitch-line pitch-pos">━━━ 10 ━━━</div>
+              <div class="pitch-line pitch-pos">── 5 ──</div>
+              <div class="fpm-symbol">
+                <span class="fpm-wing-l"></span>
+                <span class="fpm-dot">○</span>
+                <span class="fpm-wing-r"></span>
+              </div>
+              <div class="horizon-line"></div>
+              <div class="pitch-line pitch-neg">- - 5 - -</div>
+              <div class="pitch-line pitch-neg">━ ━ 10 ━ ━</div>
+            </div>
+
+            <!-- Right Altitude & Vertical Speed Tape -->
+            <div class="hud-altitude-column">
+              <div class="tape-unit">ALT FT</div>
+              <div class="alt-box" id="hud-alt-val">2887 FT</div>
+              <div class="alt-ticks">
+                <span>3100</span>
+                <span>3000</span>
+                <span class="active-tick">◀</span>
+                <span>2800</span>
+                <span>2700</span>
+              </div>
+              <div class="vs-indicator" id="hud-vs-val">-700 FPM</div>
+            </div>
+
+            <!-- Top Left System Annunciators -->
+            <div class="hud-system-annunciators">
+              <span class="hud-annun-chip green">GPS: 3D FIX</span>
+              <span class="hud-annun-chip green">TERR: NORM</span>
+              <span class="hud-annun-chip amber">WX: RADAR</span>
+              <span class="hud-annun-chip green">SVS: 60 FPS</span>
+            </div>
+
+            <!-- Center-Bottom CFIT Alert Banner -->
+            <div class="cfit-banner-alert hidden" id="cfit-banner">
+              ⚠️ PULL UP — TERRAIN AHEAD
+            </div>
+
+            <!-- Weather Radar Legend -->
+            <div class="hud-weather-legend">
+              <div class="legend-header">
+                <span>WEATHER RADAR</span>
+                <span class="wx-status-tag" id="wx-status-indicator">SIMULATION</span>
+              </div>
+              <div class="legend-scale">
+                <span class="scale-item"><span class="scale-dot wx-green"></span> Light (15-30 dBZ)</span>
+                <span class="scale-item"><span class="scale-dot wx-yellow"></span> Moderate (30-40)</span>
+                <span class="scale-item"><span class="scale-dot wx-orange"></span> Heavy (40-50)</span>
+                <span class="scale-item"><span class="scale-dot wx-red"></span> Convective (50+)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Flight Situation Risk Panel -->
+        <div class="flight-situation-panel">
+          <div class="situation-header">
+            <span>FLIGHT SITUATION &amp; HAZARD MATRIX</span>
+            <span class="sit-disclaimer">RESEARCH / DEMONSTRATION SYSTEM — NOT FOR OPERATIONAL USE</span>
+          </div>
+          <div class="situation-grid">
+            <div class="sit-card">
+              <span class="sit-title">TERRAIN CLEARANCE</span>
+              <span class="sit-val green" id="risk-terrain-val">NORMAL (CLEARANCE 2,750 FT)</span>
+            </div>
+            <div class="sit-card">
+              <span class="sit-title">OBSTACLE PROXIMITY</span>
+              <span class="sit-val green" id="risk-obs-val">CLEAR OF OBSTACLES</span>
+            </div>
+            <div class="sit-card">
+              <span class="sit-title">WEATHER RISK</span>
+              <span class="sit-val yellow" id="risk-wx-val">MODERATE RAIN (CELL 03 NE)</span>
+            </div>
+            <div class="sit-card">
+              <span class="sit-title">GLIDE PATH (3.0° GS)</span>
+              <span class="sit-val green" id="risk-gp-val">ON GLIDEPATH</span>
+            </div>
+            <div class="sit-card">
+              <span class="sit-title">CFIT STATUS</span>
+              <span class="sit-val green" id="risk-cfit-val">LOW / DEMO STATUS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Extracted Source Passage Modal -->
+  <div class="passage-modal hidden" id="passage-modal">
+    <div class="modal-bar">
+      <span class="modal-title" id="modal-passage-title">Document Excerpt</span>
+      <button class="btn-modal-close" id="btn-close-modal">✕</button>
+    </div>
+    <div class="modal-body" id="modal-passage-body"></div>
+  </div>
+
+  <!-- Manual Management Drawer -->
+  <aside class="manuals-drawer hidden" id="manuals-drawer">
+    <div class="drawer-header">
+      <h2>FLEET MANUALS &amp; INGESTION</h2>
+      <button class="btn-close-drawer" id="btn-close-drawer">✕</button>
+    </div>
+    <div class="drawer-content">
+      <p class="drawer-desc">
+        Store legally provided Boeing/Airbus FCOM and QRH PDF documents in <code>data/manuals/pdf/</code>.
+        The copilot indexes page-level text, sections, and metadata without web scraping.
+      </p>
+
+      <div class="upload-box">
+        <label for="pdf-upload-input" class="upload-label">
+          📁 UPLOAD MANUAL (PDF)
+        </label>
+        <input type="file" id="pdf-upload-input" accept=".pdf" />
+        <span class="upload-status" id="upload-status">Select a PDF flight manual</span>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn-hud-action" id="btn-trigger-reindex">
+          ⚡ RE-INDEX MANUALS
+        </button>
+        <button class="btn-hud-action" id="btn-load-demo">
+          🧪 LOAD DEMO MANUAL
+        </button>
+      </div>
+
+      <div class="manuals-list-wrap">
+        <h3>INDEXED MANUALS:</h3>
+        <ul class="manuals-list" id="manuals-list">
+          <li>Loading fleet documentation...</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Bottom Safety Ticker -->
+  <footer class="cockpit-footer">
+    <div class="ticker-content">
+      <span class="ticker-item">RESEARCH / DEMONSTRATION COCKPIT SVS</span>
+      <span class="ticker-divider">♦</span>
+      <span class="ticker-item">DO NOT CONTROL REAL AIRCRAFT SYSTEMS</span>
+      <span class="ticker-divider">♦</span>
+      <span class="ticker-item">3D TERRAIN &amp; WEATHER SYNTHESIZED VIA THREE.JS</span>
+      <span class="ticker-divider">♦</span>
+      <span class="ticker-item">FCOM RAG ENGINE ACTIVE ON LOCAL CHROMADB</span>
+      <span class="ticker-divider">♦</span>
+      <span class="ticker-item">OPENSKY SQUAWK 7700 ML RISK TELEMETRY LINKED</span>
+    </div>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

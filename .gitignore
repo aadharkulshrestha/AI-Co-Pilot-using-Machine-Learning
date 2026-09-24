@@ -1,3 +1,14 @@
 # Ignore large data files
 data/raw/opensky/squawk7700_trajectories.parquet.gz
 dataset/squawk7700_trajectories.parquet.gz
+
+# Python & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+
+# ChromaDB persistence & processed manuals cache
+data/manuals/processed/chroma/

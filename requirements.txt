@@ -1,0 +1,14 @@
+# Conversational Voice AI & FCOM RAG Copilot Dependencies
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.8.0
+python-dotenv>=1.0.1
+pypdf>=5.0.0
+chromadb>=0.5.0
+openai>=1.40.0
+pandas>=2.0.0
+python-multipart>=0.0.9
+
+# Optional for local advanced sentence-transformers or Whisper
+# sentence-transformers>=3.0.0
+# openai-whisper
