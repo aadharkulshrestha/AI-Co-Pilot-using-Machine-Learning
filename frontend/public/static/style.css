@@ -1087,21 +1087,19 @@ body.cockpit-theme {
 body.view-split .cockpit-main-layout {
   grid-template-columns: 460px 1fr;
 }
+body.view-split .panel-right-voice { display: none !important; }
 
 body.view-voice-full .cockpit-main-layout {
-  grid-template-columns: minmax(600px, 1100px);
-  justify-content: center;
+  grid-template-columns: 460px 1fr;
 }
-body.view-voice-full .panel-right-svs {
-  display: none !important;
-}
+body.view-voice-full .panel-right-svs { display: none !important; }
+body.view-voice-full .panel-right-voice { display: flex !important; }
 
 body.view-svs-full .cockpit-main-layout {
   grid-template-columns: 1fr;
 }
-body.view-svs-full .panel-left-voice {
-  display: none !important;
-}
+body.view-svs-full .panel-left-voice { display: none !important; }
+body.view-svs-full .panel-right-voice { display: none !important; }
 
 @media (max-width: 1180px) {
   body.view-split .cockpit-main-layout {
@@ -1109,7 +1107,7 @@ body.view-svs-full .panel-left-voice {
   }
 }
 
-.panel-left-voice, .panel-right-svs {
+.panel-left-voice, .panel-right-svs, .panel-right-voice {
   display: flex;
   flex-direction: column;
   min-height: 0;

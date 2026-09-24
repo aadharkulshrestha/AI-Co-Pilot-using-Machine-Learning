@@ -163,32 +163,35 @@
           <button type="submit" class="btn-hud-send" id="btn-submit-text">TRANSMIT</button>
         </form>
 
-        <!-- Flight Deck Decision Log Stream -->
-        <div class="mini-log-card">
-          <div class="mini-log-header">
-            <span>DECISION LOG &amp; CITATIONS</span>
-            <span class="hud-telemetry" id="doc-counter">INDEXED: 1 MANUAL</span>
-          </div>
-          <div class="log-stream" id="log-stream">
-            <div class="log-entry system-entry">
-              <div class="entry-meta">
-                <span class="badge-role">COPILOT SYSTEM</span>
-                <span class="timestamp">UTC ACTIVE</span>
-              </div>
-              <div class="entry-content">
-                <p><strong>Aviation Co-Pilot initialized.</strong> 3D Synthetic Vision System (SVS) &amp; Weather Radar online.</p>
-                <p class="safety-disclaimer-inline">⚠️ <em>Research / Demonstration System — Not for Operational Flight Use.</em></p>
-              </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT PANEL (VOICE MODE): Transcript & Citations Log -->
+    <section class="panel-right-voice" id="panel-transcript-deck">
+      <div class="instrument-card transcript-hud-card">
+        <div class="card-header">
+          <span class="card-label">DECISION LOG & CITATIONS</span>
+          <span class="hud-telemetry" id="doc-counter">INDEXED: 1 MANUAL</span>
+        </div>
+        <div class="log-stream" id="log-stream">
+          <div class="log-entry system-entry">
+            <div class="entry-meta">
+              <span class="badge-role">COPILOT SYSTEM</span>
+              <span class="timestamp">UTC ACTIVE</span>
             </div>
-          </div>
-          <div class="citation-inspector-wrap" id="citation-inspector">
-            <div class="citations-container" id="citations-container">
-              <div class="empty-citations-hint">No citations currently loaded.</div>
+            <div class="entry-content">
+              <p><strong>Aviation Co-Pilot initialized.</strong> AI Voice & FCOM RAG active.</p>
+              <p class="safety-disclaimer-inline">⚠️ <em>Research / Demonstration System — Not for Operational Flight Use.</em></p>
             </div>
           </div>
         </div>
+        <div class="citation-inspector-wrap" id="citation-inspector">
+          <div class="citations-container" id="citations-container">
+            <div class="empty-citations-hint">No citations currently loaded.</div>
+          </div>
+        </div>
       </div>
-    </aside>
+    </section>
 
     <!-- RIGHT/CENTER PANEL: 3D Synthetic Vision System (SVS) & Weather Radar Display -->
     <section class="panel-right-svs" id="panel-svs-deck">

@@ -644,6 +644,17 @@ document.addEventListener('DOMContentLoaded', () => {
   loadOpenSkyFlights();
   setVoiceState('IDLE');
 
+  // Handle Query Params for View Mode and hiding tabs
+  const urlParams = new URLSearchParams(window.location.search);
+  const viewMode = urlParams.get('view');
+  if (viewMode) {
+    switchViewMode(viewMode);
+  }
+  if (urlParams.get('hideTabs') === 'true') {
+    const switcher = document.querySelector('.cockpit-view-switcher');
+    if (switcher) switcher.style.display = 'none';
+  }
+
   // Launch 3D Synthetic Vision System
   try {
     if (typeof THREE !== 'undefined') {

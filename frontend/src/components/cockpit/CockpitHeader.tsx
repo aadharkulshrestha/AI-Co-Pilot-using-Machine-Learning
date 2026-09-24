@@ -66,6 +66,8 @@ export default function CockpitHeader({
     { label: "Dashboard", href: "/", icon: Plane },
     { label: "Flight Monitor", href: "/monitor", icon: Activity },
     { label: "AI Co-Pilot", href: "/copilot", icon: Cpu },
+    { label: "3D SVS", href: "/svs", icon: Compass },
+    { label: "AI Voice", href: "/voice", icon: Radio },
     { label: "What-If Simulator", href: "/simulator", icon: Sliders },
     { label: "Black Box Replay", href: "/incidents", icon: RotateCcw },
     { label: "Explainable AI", href: "/explainability", icon: Compass },
