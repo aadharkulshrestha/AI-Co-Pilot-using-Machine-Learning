@@ -28,7 +28,7 @@ export default function IncidentReplayPlayer({ incidentId, onClose }: ReplayProp
         setReplayData(data);
         setCurrentStep(0);
       } catch (err) {
-        console.error(err);
+        console.warn(err);
       } finally {
         setIsLoading(false);
       }

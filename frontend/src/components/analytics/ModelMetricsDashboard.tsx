@@ -30,7 +30,7 @@ export default function ModelMetricsDashboard() {
         setMetrics(m);
         setSafetyTrends(t);
       } catch (err) {
-        console.error(err);
+        console.warn(err);
       }
     }
     loadData();

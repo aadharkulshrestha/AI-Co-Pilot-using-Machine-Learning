@@ -33,7 +33,7 @@ export default function AsrsIncidentBrowser({ onSelectReplay }: AsrsBrowserProps
         setSelectedIncident(data.incidents[0]);
       }
     } catch (err) {
-      console.error(err);
+      console.warn(err);
     }
   };
 

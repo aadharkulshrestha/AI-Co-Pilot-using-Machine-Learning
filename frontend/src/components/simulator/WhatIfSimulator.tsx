@@ -31,7 +31,7 @@ export default function WhatIfSimulator() {
       const res = await evaluateWhatIf(newParams);
       setSimResult(res);
     } catch (err) {
-      console.error(err);
+      console.warn(err);
     } finally {
       setIsLoading(false);
     }

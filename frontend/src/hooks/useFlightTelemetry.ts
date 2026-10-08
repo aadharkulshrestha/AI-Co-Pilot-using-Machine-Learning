@@ -28,8 +28,9 @@ export function useFlightTelemetry() {
         const data = await fetchScenarios();
         setScenarios(data.scenarios || []);
         if (data.active_scenario) setActiveScenario(data.active_scenario);
-      } catch (err) {
-        console.error("Could not load scenarios:", err);
+      } catch (err: any) {
+        console.warn("Could not load scenarios:", err.message || err);
+        setError(err.message || "Failed to fetch scenarios");
       }
     }
     loadScenarios();
@@ -71,8 +72,9 @@ export function useFlightTelemetry() {
       setActiveScenario(scenName);
       setHistory([]);
       await tickLive();
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.warn("Failed to switch scenario:", err.message || err);
+      setError(err.message || "Failed to switch scenario");
     }
   };
 
