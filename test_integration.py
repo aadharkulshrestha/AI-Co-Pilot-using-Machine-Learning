@@ -4,7 +4,7 @@ Full System Integration Test: Backend API, ML Inference, ASRS Database, and Fron
 import urllib.request
 import json
 
-base_url = "http://localhost:8000"
+base_url = "http://localhost:8001"
 fe_url = "http://localhost:3000"
 
 def test_endpoint(name, url, method="GET", data=None):
@@ -31,7 +31,10 @@ ok, st, res = test_endpoint("Health", f"{base_url}/health")
 print(f"Health Check: status={st}, res={res}")
 
 ok, st, res = test_endpoint("Root", f"{base_url}/")
-print(f"Root Check: status={st}, system={res.get('system')}, status={res.get('status')}")
+if isinstance(res, dict):
+    print(f"Root Check: status={st}, system={res.get('system')}, status={res.get('status')}")
+else:
+    print(f"Root Check: status={st}, type={type(res).__name__}")
 
 print("\n" + "=" * 60)
 print("2. ML INFERENCE ON REAL FLIGHT SCENARIOS")

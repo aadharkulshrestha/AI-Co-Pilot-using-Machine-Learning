@@ -44,10 +44,10 @@ export default function FlightMap({
           attributionControl: false,
         });
 
-        // Dark cockpit tile layer (CartoDB Dark Matter)
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        // Standard OSM tiles inverted via CSS to create a free dark mode map without API keys
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
-          subdomains: "abcd",
+          className: "dark-map-tiles"
         }).addTo(map);
 
         // Aircraft custom SVG div icon
@@ -162,6 +162,11 @@ export default function FlightMap({
 
       {/* Leaflet Map DOM Container */}
       <div ref={mapContainerRef} className="w-full h-full" />
+      <style>{`
+        .dark-map-tiles {
+          filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+      `}</style>
     </div>
   );
 }

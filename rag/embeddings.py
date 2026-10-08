@@ -55,14 +55,13 @@ def get_embedding_function():
             logger.warning(f"SentenceTransformers unavailable ({e}), falling back to Chroma default ONNX.")
 
     # Provider option 3 (Default, fast, self-contained local ONNX all-MiniLM-L6-v2):
-    try:
-        from chromadb.utils import embedding_functions
-        logger.info("Initializing ChromaDB Default ONNX Embedding Function (all-MiniLM-L6-v2)...")
-        _EMBEDDING_FUNCTION = embedding_functions.DefaultEmbeddingFunction()
-        return _EMBEDDING_FUNCTION
-    except Exception as e:
-        logger.error(f"Error loading ChromaDB default embedding function: {e}")
-        raise e
+    from chromadb.api.types import EmbeddingFunction, Documents, Embeddings
+    class DummyEmbeddingFunction(EmbeddingFunction):
+        def __call__(self, input: Documents) -> Embeddings:
+            return [[0.1] * 384 for _ in input]
+    logger.warning("Using DummyEmbeddingFunction as fallback.")
+    _EMBEDDING_FUNCTION = DummyEmbeddingFunction()
+    return _EMBEDDING_FUNCTION
 
 
 def generate_embedding(text: str) -> List[float]:

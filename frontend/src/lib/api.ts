@@ -1,6 +1,6 @@
 import { LiveTelemetryFrame, ASRSIncident, ModelMetrics, TelemetryData } from "@/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001/api";
 
 export async function fetchLiveTelemetry(): Promise<LiveTelemetryFrame> {
   const res = await fetch(`${API_BASE}/telemetry/live`, { cache: "no-store" });

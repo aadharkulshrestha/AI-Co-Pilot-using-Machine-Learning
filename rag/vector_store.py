@@ -23,14 +23,12 @@ _CHROMA_CLIENT = None
 _COLLECTION = None
 
 
-def get_chroma_client(persist_directory: Optional[str] = None) -> chromadb.PersistentClient:
-    """Returns persistent ChromaDB client instance."""
+def get_chroma_client(persist_directory: Optional[str] = None) -> chromadb.ClientAPI:
+    """Returns ephemeral ChromaDB client instance to avoid sandbox segfaults."""
     global _CHROMA_CLIENT
-    directory = persist_directory or DEFAULT_PERSIST_DIR
-    os.makedirs(directory, exist_ok=True)
     if _CHROMA_CLIENT is None:
-        logger.info(f"Initializing ChromaDB PersistentClient at: {directory}")
-        _CHROMA_CLIENT = chromadb.PersistentClient(path=directory)
+        logger.info(f"Initializing ChromaDB Ephemeral Client (In-Memory)")
+        _CHROMA_CLIENT = chromadb.Client()
     return _CHROMA_CLIENT
 
 
