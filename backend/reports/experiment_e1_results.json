@@ -1,0 +1,55 @@
+{
+    "hardware_and_environment": {
+        "device": "cpu",
+        "memory_usage_mb": 1701.296875
+    },
+    "performance_benchmarks": {
+        "batch_size_tested": 1,
+        "average_inference_latency_ms": 0.5214943999997104,
+        "p95_inference_latency_ms": 0.6062199999973927,
+        "throughput_fps": 1917.5661330218607
+    },
+    "threshold_selection": {
+        "rule": "99th percentile of Validation MAE",
+        "threshold_value": 0.08247582614421844
+    },
+    "reconstruction_error_mae": {
+        "train": {
+            "mean": 0.01569994166493416,
+            "std": 0.10428464412689209,
+            "min": 0.002447845647111535,
+            "max": 19.91077995300293,
+            "p50": 0.009489880874752998,
+            "p95": 0.03916170820593834,
+            "p99": 0.07521785795688629
+        },
+        "val": {
+            "mean": 0.01813345029950142,
+            "std": 0.19466722011566162,
+            "min": 0.0028652807231992483,
+            "max": 19.312742233276367,
+            "p50": 0.009539181366562843,
+            "p95": 0.04043472930788994,
+            "p99": 0.08247582614421844
+        },
+        "test": {
+            "mean": 0.016300149261951447,
+            "std": 0.021232865750789642,
+            "min": 0.002908121794462204,
+            "max": 0.6375448703765869,
+            "p50": 0.010076520964503288,
+            "p95": 0.04808228462934494,
+            "p99": 0.0902295932173729
+        }
+    },
+    "test_evaluation": {
+        "total_windows": 137212,
+        "flagged_windows": 1928,
+        "flagged_percentage": 1.4051249161880885
+    },
+    "limitations_and_disclaimers": [
+        "Supervised metrics (Accuracy, Precision, Recall, F1) are NOT reported because independent, validated event labels are missing for these windows.",
+        "Flagged anomalies represent statistical outliers in trajectory reconstruction, NOT confirmed safety emergencies. A human-in-the-loop or verified label database is required for true emergency confirmation.",
+        "The training dataset contains emergency squawk 7700 flights, meaning the Autoencoder was exposed to anomalous data during training. The threshold essentially flags 'the most extreme 1% of behaviors' within an already-biased emergency population, rather than identifying rare anomalies within normal flights."
+    ]
+}

@@ -1,0 +1,94 @@
+{
+    "dataset_shape": {
+        "rows": 4344359,
+        "columns": 11
+    },
+    "columns": [
+        "timestamp",
+        "altitude",
+        "callsign",
+        "flight_id",
+        "groundspeed",
+        "icao24",
+        "latitude",
+        "longitude",
+        "squawk",
+        "track",
+        "vertical_rate"
+    ],
+    "data_types": {
+        "timestamp": "datetime64[ms, UTC]",
+        "altitude": "float64",
+        "callsign": "object",
+        "flight_id": "object",
+        "groundspeed": "float64",
+        "icao24": "object",
+        "latitude": "float64",
+        "longitude": "float64",
+        "squawk": "object",
+        "track": "float64",
+        "vertical_rate": "float64"
+    },
+    "missing_values": {
+        "counts": {
+            "timestamp": 0,
+            "altitude": 0,
+            "callsign": 0,
+            "flight_id": 0,
+            "groundspeed": 37047,
+            "icao24": 0,
+            "latitude": 0,
+            "longitude": 0,
+            "squawk": 0,
+            "track": 37047,
+            "vertical_rate": 37047
+        },
+        "percentages": {
+            "timestamp": 0.0,
+            "altitude": 0.0,
+            "callsign": 0.0,
+            "flight_id": 0.0,
+            "groundspeed": 0.85,
+            "icao24": 0.0,
+            "latitude": 0.0,
+            "longitude": 0.0,
+            "squawk": 0.0,
+            "track": 0.85,
+            "vertical_rate": 0.85
+        }
+    },
+    "duplicate_records": 0,
+    "identified_columns": {
+        "flight_identifier": "callsign",
+        "timestamp": "timestamp",
+        "altitude": "altitude",
+        "velocity": "groundspeed",
+        "heading": "track",
+        "vertical_rate": "vertical_rate",
+        "latitude": "latitude",
+        "longitude": "longitude"
+    },
+    "timestamp_range": {
+        "min": 1514809789000.0,
+        "max": 1580270992000.0
+    },
+    "grouping_stats": {
+        "unique_flights": 823,
+        "obs_per_flight_mean": 5278.686512758201,
+        "obs_per_flight_min": 33,
+        "obs_per_flight_max": 22825,
+        "obs_per_flight_median": 4398.0
+    },
+    "sampling_intervals": {
+        "mean_interval_sec": 19764.129041407738,
+        "median_interval_sec": 1000.0,
+        "min_interval_sec": 1000.0,
+        "max_interval_sec": 17962957000.0
+    },
+    "windowing_viability": {
+        "min_required_window_size": 15,
+        "total_flights": 823,
+        "flights_with_insufficient_data": 0,
+        "viable_flights": 823
+    }
+}

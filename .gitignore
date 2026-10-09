@@ -49,3 +49,7 @@ venv/
 
 # ChromaDB persistence & processed manuals cache
 data/manuals/processed/chroma/
+
+# Ignore large dataset files
+backend/dataset/processed_sequences/*.npy
+backend/dataset/processed_sequences/*.json

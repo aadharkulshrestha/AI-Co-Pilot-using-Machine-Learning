@@ -1,0 +1,30 @@
+{
+    "telemetry_cleaning": {
+        "original_observations": 4344359,
+        "removed_due_to_nan": 37047,
+        "removed_due_to_implausible": 3124,
+        "retained_observations": 4304188,
+        "total_unique_flight_segments": 823
+    },
+    "sequence_generation": {
+        "window_size": 15,
+        "stride": 5,
+        "total_windows_generated": 858878,
+        "features_per_timestep": 6
+    },
+    "data_leakage_prevention": {
+        "random_seed": 42,
+        "split_level": "flight_segment",
+        "train_segments": 576,
+        "val_segments": 123,
+        "test_segments": 124,
+        "train_windows": 592126,
+        "val_windows": 129540,
+        "test_windows": 137212
+    },
+    "label_audit": {
+        "pilot_actions": "NOT AVAILABLE. OpenSky telemetry does not record internal pilot commands, stick inputs, or MCDU entries. Supervised action classification on this dataset alone is invalid without synthetic generation or external mappings.",
+        "flight_risk": "NOT AVAILABLE. Objective risk ground truth requires external safety investigation outcomes. Creating risk scores purely from telemetry features and then validating a model on those same scores constitutes circular reasoning (data leakage).",
+        "abnormal_events": "PARTIALLY AVAILABLE (UNSUPERVISED). While Squawk 7700 designates an emergency, the specific event (e.g. Engine Failure) is absent. Telemetry can support unsupervised anomaly detection (e.g. high descent rates), but explicit classification requires robust cross-referencing with external incident databases."
+    }
+}

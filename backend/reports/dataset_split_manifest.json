@@ -1,0 +1,10 @@
+{
+    "random_seed": 42,
+    "split_level": "flight_segment",
+    "train_segments": 576,
+    "val_segments": 123,
+    "test_segments": 124,
+    "train_windows": 592126,
+    "val_windows": 129540,
+    "test_windows": 137212
+}
