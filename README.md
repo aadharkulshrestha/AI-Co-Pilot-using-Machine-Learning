@@ -85,20 +85,32 @@ AI-Co-Pilot-using-Machine-Learning/
 │   ├── stt.py                       # Speech-to-text abstraction (Web Speech / Whisper)
 │   └── tts.py                       # Text-to-speech abstraction (SpeechSynthesis / TTS)
 │
-├── api/
+├── backend/                         # FastAPI core backend service
+│   ├── app/
+│   │   ├── main.py                  # Primary FastAPI entrypoint
+│   │   ├── config.py                # App configuration & environment settings
+│   │   ├── api/                     # API route controllers (telemetry, copilot, etc.)
+│   │   ├── db/                      # SQLite schema and seed data
+│   │   ├── ml/                      # PyTorch LSTM inference engine & models
+│   │   └── services/                # OpenSky live polling & flight simulator
+│   ├── copilot.db                   # SQLite database
+│   └── requirements.txt             # Backend dependencies
+│
+├── frontend/                        # Next.js React glass cockpit HUD interface
+│   ├── src/                         # Next.js UI components & cockpit displays
+│   ├── public/                      # Static assets & 3D Three.js SVS modules
+│   └── package.json
+│
+├── api/                             # Standalone / Legacy RAG API endpoints
 │   ├── __init__.py
-│   ├── copilot_api.py               # FastAPI backend serving API & cockpit UI
+│   ├── copilot_api.py               # Standalone FastAPI service
 │   ├── intent.py                    # Aviation intent parsing & conversational memory
 │   └── risk_service.py              # NASA ASRS & OpenSky risk analysis adapter
 │
-├── frontend/
-│   ├── index.html                   # Glass cockpit HUD telemetry interface
-│   ├── style.css                    # Dark cockpit theme, annunciators, CRT scanlines
-│   └── app.js                       # PTT voice loop, waveform canvas, interactive cards
-│
 ├── tests/
 │   ├── __init__.py
-│   └── test_copilot.py              # 10 unit & integration tests
+│   ├── test_copilot.py              # Unit & integration tests
+│   └── test_svs.py                  # SVS test suite
 │
 ├── src/data/                        # Original data preprocessing pipelines
 │   ├── clean_asrs.py
@@ -111,6 +123,55 @@ AI-Co-Pilot-using-Machine-Learning/
 ├── .gitignore
 └── README.md
 ```
+
+---
+
+## 📡 Live OpenSky Integration & Transformer Sequence Modeling
+
+This project integrates real-time live telemetry from the **OpenSky Network REST API**, utilizing a dual-model ML inference system (BiLSTM + Attention & Transformer) to predict pilot actions and score operational risk based on continuous telemetry streams.
+
+### 1. OpenSky Setup & Client Credentials
+To enable real-world live traffic polling:
+1. Create a free account at [OpenSky Network](https://opensky-network.org/).
+2. Retrieve your client credentials (username/password or client ID/secret).
+3. Set `OPENSKY_CLIENT_ID` and `OPENSKY_CLIENT_SECRET` in your `.env` file.
+
+### 2. Environment Variables & Airspace Configuration
+The following variables govern live polling in `.env`:
+```env
+OPENSKY_CLIENT_ID=your_id
+OPENSKY_CLIENT_SECRET=your_secret
+OPENSKY_POLL_INTERVAL_SECONDS=10
+OPENSKY_DEFAULT_AIRSPACE=KSFO
+```
+Airspaces are dynamically configured via `config/airspaces.json`, supporting filtering by bounding box (e.g., KSFO, EGLL, KJFK).
+
+### 3. Live Mode vs. Demo Mode
+- **Live Mode**: When OpenSky connects successfully, real-time aircraft telemetry (converted from meters/sec to aviation knots/feet) is streamed into the sliding window ML pipeline.
+- **Demo Mode / Simulator Fallback**: If OpenSky is offline, credentials are missing (anonymous rate-limit exceeded), or the user selects it, the system falls back to the internal `FlightSimulatorService` to generate deterministic synthetic telemetry. The cockpit UI clearly distinguishes between `LIVE OPENSKY` and `SIMULATION`.
+
+### 4. Rate Limits & OpenSky Telemetry Schema
+- The polling service automatically detects `429 Rate Limited` status and temporarily backs off according to `OPENSKY_POLL_INTERVAL_SECONDS` to prevent ban.
+- **Telemetry Schema**: OpenSky vectors are dynamically normalized. Altitude (m -> ft), Velocity (m/s -> knots), Vertical Rate (m/s -> ft/min).
+
+### 5. Real Trajectory Dataset Requirements (Missing Data Policy)
+The ML pipeline expects a multi-hour emergency sequence dataset at:
+`data/raw/opensky/squawk7700_trajectories.parquet.gz`
+- **If present**: The `build_trajectory_features.py` pipeline dynamically detects schema columns, creates a trajectory quality report (`data/processed/reports/trajectory_quality_report.json`), and maintains a strict dual-stage process (1 Hz raw -> 30s ML window).
+- **If absent**: The system cleanly falls back to generating a small synthetic/demo dataset labeled `SYNTHETIC (DEMO MODE)` so that the pipeline and UI do not crash. **We never fabricate fake data and label it as real.**
+
+### 6. Transformer Training & Model Comparison
+We provide two distinct Neural Sequence Classifiers for pilot action prediction:
+1. **BiLSTM + Temporal Attention** (`models.py`)
+2. **PyTorch Transformer Encoder** (`transformer_model.py` / `train_transformer.py`)
+To train the Transformer:
+```bash
+python -m backend.app.ml.train_transformer
+```
+Metrics (Accuracy, F1, ROC-AUC) are saved to `backend/saved_models/transformer_metrics.json`. Real-time inference dynamically selects the best-available active model.
+
+### 7. Real-Time Inference & 3D SVS Integration
+Live aircraft selected from the OpenSky stream feed directly into the **3D SVS WebGL pipeline**, translating live coordinates and pitch/roll heuristics into a full real-time 3D flight representation alongside live ML risk predictions.
 
 ---
 
@@ -211,14 +272,65 @@ python -m rag.ingest --create-demo-manual
 
 ## 🚀 Running the AI Co-Pilot
 
-Start the FastAPI backend server (which automatically hosts both the REST API and the Cockpit Web Interface):
+The platform consists of a **FastAPI backend** (PyTorch risk inference, SQLite telemetry, OpenSky polling, and WebSocket streams) and a **Next.js Glass Cockpit frontend**.
+
+### 1. Launching the Backend
+
+Always launch the backend from the **project root directory**:
+
+```powershell
+# 1. Activate the virtual environment
+# Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+
+# Windows (Command Prompt):
+.\venv\Scripts\activate.bat
+
+# macOS / Linux:
+source venv/bin/activate
+```
+
+```bash
+# 2. Start the FastAPI server with reload
+uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+> [!IMPORTANT]
+> **Module Path & Working Directory**:
+> - Always execute the command from the **repository root directory** using `backend.app.main:app`.
+> - Do not `cd backend` and run `uvicorn main:app`, as Python will raise `Error loading ASGI app. Could not import module "main"`.
+> - Keep the port on **`8000`** so the Next.js API proxy connects seamlessly.
+
+**Backend URLs:**
+- REST API & Health Check: `http://127.0.0.1:8000/`
+- Interactive Swagger UI: 👉 **`http://127.0.0.1:8000/docs`**
+- ReDoc Documentation: 👉 **`http://127.0.0.1:8000/redoc`**
+
+---
+
+### 2. Launching the Next.js Cockpit Frontend
+
+In a separate terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open your browser to:
+👉 **`http://localhost:3000/`**
+
+---
+
+### (Alternative) Standalone Legacy RAG Copilot UI
+
+If running the standalone RAG engine without the Next.js dashboard:
 
 ```bash
 uvicorn api.copilot_api:app --host 127.0.0.1 --port 8000 --reload
 ```
-
-Open your browser to:
-👉 **`http://127.0.0.1:8000/`**
+Access at `http://127.0.0.1:8000/`.
 
 ---
 
@@ -407,23 +519,43 @@ cd AI-Co-Pilot-using-Machine-Learning
 
 # Create and activate virtual environment
 python -m venv venv
-.\venv\Scripts\activate   # Windows
-source venv/bin/activate  # macOS / Linux
+
+# Windows (PowerShell)
+.\venv\Scripts\Activate.ps1
+
+# Windows (Command Prompt)
+.\venv\Scripts\activate.bat
+
+# macOS / Linux
+source venv/bin/activate
 
 # Install backend dependencies
-pip install fastapi uvicorn pydantic python-dotenv pypdf chromadb openai pandas python-multipart httpx
+pip install -r backend/requirements.txt
+pip install -r requirements.txt
 ```
 
-### 3. Launching Backend & Serving Frontend
+### 3. Launching the Platform
+
+#### Step A: Start the FastAPI Backend
+Run from the **repository root directory**:
 ```bash
-# Start the FastAPI server with reload
-uvicorn api.copilot_api:app --host 127.0.0.1 --port 8000 --reload
+uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000
+```
+- API Base: `http://127.0.0.1:8000/`
+- Interactive Swagger UI: `http://127.0.0.1:8000/docs`
+
+#### Step B: Start the Next.js Frontend
+In a new terminal window:
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 Open your browser to:
 ```
-http://127.0.0.1:8000/
+http://localhost:3000/
 ```
-The FastAPI backend serves the static frontend directly from `frontend/` including all SVS modules at `/svs/`.
+The Next.js frontend connects to the backend at `http://127.0.0.1:8000/api` for real-time telemetry, risk predictions, and SVS simulations.
 
 ---
 
@@ -456,6 +588,9 @@ python -m unittest tests/test_copilot.py
 
 | Issue | Cause | Solution |
 | :--- | :--- | :--- |
+| **`Error loading ASGI app: Could not import module "main"`** | Ran `uvicorn main:app` from inside the `backend/` directory | Run from the repository root: `uvicorn backend.app.main:app --reload --host 127.0.0.1 --port 8000`. |
+| **`'source' is not recognized`** | Tried running Unix `source` in Windows PowerShell | Run `.\venv\Scripts\Activate.ps1` in PowerShell or `.\venv\Scripts\activate.bat` in Command Prompt. |
+| **PowerShell script execution disabled** | Windows ExecutionPolicy restriction | Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` in your PowerShell session. |
 | **WebGL Not Supported** | Browser hardware acceleration disabled | Enable Hardware Acceleration in browser settings (`chrome://settings/system`). |
 | **SVS Canvas Blank** | Three.js CDN blocked or offline | Ensure internet access for CDN scripts or bundle `three.min.js` locally. |
 | **Weather Status: SIMULATION** | NOAA/NWS API timeout or foreign coordinates | System automatically and safely falls back to high-fidelity simulated radar cells. |

@@ -32,9 +32,8 @@ export default function FlightMap({
 
     async function initMap() {
       if (typeof window === "undefined" || !mapContainerRef.current) return;
-      
+
       const L = (await import("leaflet")).default;
-      import("leaflet/dist/leaflet.css");
 
       if (!mapInstanceRef.current && mapContainerRef.current) {
         const map = L.map(mapContainerRef.current, {
@@ -44,11 +43,18 @@ export default function FlightMap({
           attributionControl: false,
         });
 
-        // Dark cockpit tile layer (CartoDB Dark Matter)
-        L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-          maxZoom: 19,
-          subdomains: "abcd",
+        // Dark cockpit tile layer (Esri World Dark Gray Canvas - Free, No API Key Required)
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+          maxZoom: 16,
+          attribution: "Esri, DeLorme, NAVTEQ",
         }).addTo(map);
+
+        // Dark cockpit reference layer (City labels & regional boundaries)
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
+          maxZoom: 16,
+          attribution: "Esri, DeLorme, NAVTEQ",
+        }).addTo(map);
+
 
         // Aircraft custom SVG div icon
         const planeIcon = L.divIcon({
