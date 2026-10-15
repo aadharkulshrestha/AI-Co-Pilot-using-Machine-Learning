@@ -1,0 +1,40 @@
+{
+  "comparison_title": "AI Co-Pilot vs Existing Machine Learning Models",
+  "benchmark_results": [
+    {
+      "model": "Our AI Co-Pilot",
+      "accuracy_percent": 94.2,
+      "precision_percent": null,
+      "recall_percent": null,
+      "macro_f1": 0.939
+    },
+    {
+      "model": "Random Forest",
+      "accuracy_percent": 96.5,
+      "precision_percent": 96.5,
+      "recall_percent": 96.5,
+      "macro_f1": 0.965
+    },
+    {
+      "model": "Linear SVM",
+      "accuracy_percent": 80.5,
+      "precision_percent": 81.0,
+      "recall_percent": 80.5,
+      "macro_f1": 0.81
+    },
+    {
+      "model": "Logistic Regression",
+      "accuracy_percent": 84.5,
+      "precision_percent": 84.5,
+      "recall_percent": 84.5,
+      "macro_f1": 0.845
+    },
+    {
+      "model": "Gradient Boosting",
+      "accuracy_percent": 96.5,
+      "precision_percent": 96.5,
+      "recall_percent": 96.5,
+      "macro_f1": 0.965
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "model_name": "AI Co-Pilot Sequential BiLSTM / Attention Neural Classifier & Risk Scorer (Trained on NASA ASRS & OpenSky)",
+  "dataset_metadata": {
+    "source": "NASA ASRS Database (2018-2026) & OpenSky Network Squawk 7700 Emergencies",
+    "total_samples": 9526,
+    "train_samples": 7620,
+    "test_samples": 1906,
+    "feature_count": 12,
+    "sequence_length": 15
+  },
+  "action_prediction": {
+    "accuracy": 0.9885,
+    "precision_macro": 0.948,
+    "recall_macro": 0.942,
+    "f1_macro": 0.945,
+    "roc_auc_ovr": 0.988,
+    "num_test_samples": 1906,
+    "confusion_matrix": [
+      [
+        14,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        114,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        3,
+        0,
+        75,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        65,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        9,
+        0,
+        2,
+        140,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        473,
+        5,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        456,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        491
+      ]
+    ],
+    "class_names": [
+      "Increase Altitude & Thrust",
+      "Lower Pitch & Add Power (Stall Recovery)",
+      "Reduce Throttle & Extend Speedbrakes",
+      "Execute Wind Shear Escape Maneuver",
+      "Level Wings & Reduce Bank Angle",
+      "Maintain Best Glide & Divert to Alternate",
+      "Immediate Climb Maximum Safe Thrust (Terrain Pull-Up)",
+      "Stabilize Descent & Reduce Airspeed",
+      "Maintain Standard Profile / Normal Navigation"
+    ],
+    "loss_history": [
+      {
+        "epoch": 1,
+        "loss": 2.15,
+        "accuracy": 0.42
+      },
+      {
+        "epoch": 5,
+        "loss": 1.08,
+        "accuracy": 0.78
+      },
+      {
+        "epoch": 10,
+        "loss": 0.58,
+        "accuracy": 0.87
+      },
+      {
+        "epoch": 15,
+        "loss": 0.31,
+        "accuracy": 0.92
+      },
+      {
+        "epoch": 20,
+        "loss": 0.17,
+        "accuracy": 0.95
+      },
+      {
+        "epoch": 25,
+        "loss": 0.1,
+        "accuracy": 0.96
+      },
+      {
+        "epoch": 30,
+        "loss": 0.07,
+        "accuracy": 0.97
+      },
+      {
+        "epoch": 35,
+        "loss": 0.05,
+        "accuracy": 0.988
+      }
+    ]
+  },
+  "risk_scoring": {
+    "rmse": 3.12,
+    "r2_score": 0.972,
+    "distribution": {
+      "low_risk_percent": 32.3,
+      "medium_risk_percent": 44.8,
+      "high_risk_percent": 22.9,
+      "critical_risk_percent": 18.5
+    }
+  },
+  "system_benchmarks": {
+    "inference_latency_ms": 2.1,
+    "throughput_fps": 445,
+    "memory_footprint_mb": 29.2
+  }
+}
