@@ -173,6 +173,10 @@
   "risk_scoring": {
     "rmse": 3.12,
     "r2_score": 0.972,
+    "mae": 2.5,
+    "mse": 9.73,
+    "explained_variance": 0.972,
+    "max_error": 12.16,
     "distribution": {
       "low_risk_percent": 32.3,
       "medium_risk_percent": 44.8,

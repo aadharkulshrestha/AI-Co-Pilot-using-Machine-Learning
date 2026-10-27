@@ -2,7 +2,7 @@
   "comparison_title": "AI Co-Pilot vs Existing Machine Learning Models",
   "benchmark_results": [
     {
-      "model": "Our AI Co-Pilot",
+      "model": "Proposed Model",
       "accuracy_percent": 94.2,
       "precision_percent": null,
       "recall_percent": null,
