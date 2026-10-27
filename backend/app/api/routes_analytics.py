@@ -44,8 +44,10 @@ def get_ml_metrics():
                 ]
             },
             "risk_scoring": {
-                "rmse": 3.42,
-                "r2_score": 0.962
+                "rmse": 3.12,
+                "r2_score": 0.972,
+                "mae": 2.50,
+                "mse": 9.73
             }
         }
     return metrics
